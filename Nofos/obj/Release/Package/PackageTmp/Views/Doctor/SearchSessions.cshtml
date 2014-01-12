@@ -1,0 +1,376 @@
+﻿@{
+    ViewBag.Title = "Upcomming Sessions - Nofoos.com";
+    Layout = "~/Views/shared/MasterPage2.cshtml";
+    int Counter = 0;
+}
+
+@using GDAL;
+
+
+
+<script type="text/javascript">
+
+    var Counterr = 0;
+    $(document).ready(function () {
+        var options = {
+            weekday: "numeric", year: "numeric", month: "numeric",
+            day: "numeric", hour: "numeric", minute: "numeric"
+        };
+        var date = new Date();
+        var Day = date.getDate();
+        var mounth = date.getMonth() + 1;
+        var Year = date.getFullYear();
+        var Time = date.toLocaleTimeString("en-US");
+        var TimeLength = date.toLocaleTimeString("en-US").length;
+        var FullDate = mounth + '/' + Day + '/' + Year + " " + date.toLocaleTimeString("en-US");
+        if (Time.indexOf("GMT") != -1) {
+            FullDate = mounth + '/' + Day + '/' + Year + " " + date.toLocaleTimeString("en-US").substring(0, TimeLength - 5);
+        }
+        $.ajax({
+            url: '/User/SetTO',
+            type: 'post',
+            data: { "_LocalTime": FullDate }
+        });
+    });
+    $(document).ready(function () {
+        FilterDoctors();
+        if ($(document).width() < 450) {
+            $('.w-blog-entry-meta-date').each(function (index,e) {
+                $(this).attr('style','position:relative;float:left');
+            });
+        }
+    });
+
+    function convertDate(inputFormat) {
+        var d = new Date(inputFormat);
+        return [d.getDate(), d.getMonth() + 1, d.getFullYear()].join('/');
+    }
+
+    function isEmpty(obj) {
+        for (var prop in obj) {
+            if (obj.hasOwnProperty(prop))
+                return false;
+        }
+
+        return true;
+    }
+
+    function Getmounthintext(inputFormat) {
+        var d = new Date(inputFormat);
+        var month = new Array();
+        month[0] = "Jan";
+        month[1] = "Feb";
+        month[2] = "Mar";
+        month[3] = "Apr";
+        month[4] = "May";
+        month[5] = "Jun";
+        month[6] = "Jul";
+        month[7] = "Aug";
+        month[8] = "Sep";
+        month[9] = "Oct";
+        month[10] = "Nov";
+        month[11] = "Dec";
+        
+        var n = month[d.getMonth()];
+        return n;
+    }
+    var Days = new Array();
+    Days[0] = "Sat";
+    Days[1] = "Sun";
+    Days[2] = "Mon";
+    Days[3] = "Tue";
+    Days[4] = "Wed";
+    Days[5] = "Thr";
+    Days[6] = "Fri";
+    function Purchase(ID, Counter1) {
+
+        window.location.href = "/Doctor/Purchase/" + ID;
+
+    }
+
+    function GoToProfile(ID) {
+        window.open("/Doctor/View/" + ID, "_blank");
+        win.focus();
+        //window.location.href = "/Doctor/View/" + ID;
+    }
+
+    function FilterDoctors() {
+        var data;
+        var DID = $('#Therapist').val();
+        var SP = $('#Speciality').val();
+        var Ty = $('#Type').val();
+        var Lang = $('#Language').val();
+        var CDate = $('#Date').val();
+        data = { '_ID': DID, '_SP': SP, "Ty": Ty, 'Lang': Lang, 'CDate': CDate };
+        $.ajax({
+            url: '/Doctor/GetFilteredDoctors',
+            type: 'post',
+            data: data,
+            beforeSend: function () {
+                $('#Loader').css({ 'display': 'block' });
+            },
+            complete: function () {
+                $('#Loader').css({ 'display': 'none' });
+            },
+            success: function (data) {
+                $('.w-blog-list').empty();
+                if (isEmpty(data) == true) {
+                    $('.w-blog-list').append('<div class="g-alert type_info">'
+                    + '<div class="g-alert-body" style="text-align:center;width:100%;">'
+                        + '<p><strong>No Result Found</strong></br> Please search again, there are no results for your current search criteria.</p>'
+                    + '</div>'
+                + '</div>');
+                    return;
+                }
+                $.each(data, function (Index, Custom) {
+                    var SPSS = Custom.Doctors.SP1 + '<br/>' + Custom.Doctors.SP2 + '<br/>' + Custom.Doctors.SP3;
+                    var styleColor = "";
+                    var styleDisplay = "";
+                    if (Custom.AvOrNot == "Not available") {
+                        styleColor = "color:red;";
+                        styleDisplay = "display:none;";
+                    }
+                    else {
+                        styleColor = "color:green;";
+                    }
+                    var SType = "";
+                    if (Custom.Type == 1) {
+                        SType = "Individual";
+                    }
+                    else {
+                        SType = "Group";
+                    }
+                    var milli = Custom.Date.replace(/\/Date\((-?\d+)\)\//, '$1');
+                    var SessionDate = new Date(parseInt(milli));
+                    SessionDate = new Date(SessionDate.toISOString());
+                    var mounthOnly = Getmounthintext(SessionDate);
+                    var dayOnly = SessionDate.getUTCDate();
+                    var DayName = Days[SessionDate.getDay()];
+                    var yearOnly = SessionDate.getFullYear();
+                    $('.w-blog-list').append('<div class="w-blog-entry ' + Counterr + '" style="position:relative;">'
+                                                        + '<div class="w-blog-entry-meta-date" style="left:90%;position:absolute;top:5%;right:5%">'
+                                                                + '<span id="dayname' + Counterr + '" class="w-blog-entry-meta-date-day">' + DayName + '</span><span id="mounth' + Counterr + '" class="w-blog-entry-meta-date-month">' + mounthOnly + '</span> <span id="day' + Counterr + '" class="w-blog-entry-meta-date-day">' + dayOnly + '</span> <span id="year' + Counterr + '" class="w-blog-entry-meta-date-year">' + yearOnly + '</span>'
+                                                        + '</div>'
+                                                        + '<div id="' + Custom.Doctors.ID + '" class="w-blog-entry-h ' + Counterr + '">'
+                                                            + '<a class="w-blog-entry-link" href="javascript:GoToProfile(' + Custom.Doctors.ID + ')">'
+                                                                + '<div class="w-blog-entry-preview">'
+                                                                    + '<img src="' + Custom.Doctors.ProfileImageLink + '" alt="DoctorImg">'
+                                                                + '</div>'
+                                                                + '<h2 class="w-blog-entry-title" style="margin-bottom: 0px;">'
+                                                                    + '<span class="w-blog-entry-title-h">' + Custom.Doctors.FirstName + ' ' + Custom.Doctors.LastName + '</span>'
+                                                                    + '<span style="font-size:12px;color:#777"> ' + Custom.Doctors.Language.replace("_","/")+ '</span>'
+                                                                + '</h2>'
+                                                            + '</a>'
+                                                            + '<div class="w-blog-entry-body">'
+                                                                + '<div class="w-blog-entry-meta">'
+
+                                                                + '</div>'
+                                                                + '<div class="w-blog-entry-short">'
+                                                                    + SPSS
+                                                                + '</div>'
+                                                                + '<label id="Time' + Counterr + '"><strong>' + 'Time: </strong>' + Custom.Time + '</label>' + '&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp <strong>Duration:</strong> ' + '<label id="Duration' + Counterr + '">' + Custom.Duration + ' min' + '</label>'
+                                                                + '<br /><label style="' + styleColor + '" id="Type' + Counterr + '"><strong>' + '</strong>' + Custom.AvOrNot + '</label>'
+                                                                + '<div class="w-blog-entry-short" style="float: right;">'
+                                                                    + '<a class="w-blog-entry-link" href="javascript:GoToProfile(' + Custom.Doctors.ID + ')">View Profile '
+                                                                    + '</a> | '
+                                                            + '<a class="w-blog-entry-link" style="' + styleDisplay + '" href="javascript:Purchase(' + Custom.ID + ',' + Counterr + ');">Book Session '
+                                                            + '</a>  '
+                                                            + '<label><strong>' + Custom.Price + ' EGP</strong></label>'
+                                                                + '</div>'
+                                                            + '</div>'
+                                                        + '</div>'
+                                                    + '</div>');
+                    Counterr++;
+                });
+            },
+            error: function (data) {
+                console.log(data.responseText);
+            }
+        });
+    }
+</script>
+
+
+
+<div class="l-main">
+    <div class="l-main-h">
+        <div class="l-subsection">
+            <div class="l-subsection-h">
+                <section id="SearchSessions" class="l-section">
+                    <div class="l-subsection-hh g-html i-cf">
+                        <h2>
+                            <span class="highlight">Confidentiality</span>
+                        </h2>
+                        <p class="size_big" style="text-align: center;">
+                            Just like any psychologist/client confidentiality, Nofoos psychologists took an oath of secrecy, preserving the confidentiality of all clients and their family members.
+                        </p>
+                        <div class="g-hr">
+                            <span class="g-hr-h">
+                                <i class="icon-star"></i>
+                            </span>
+                        </div>
+                        <div class="g-cols" style="margin-bottom: 100px;">
+                            <div class="one-third">
+                                <p class="subtitle">
+                                    Search Filter
+                                </p>
+                                <div class="w-form contacts_form">
+                                    <div class="w-form-h contacts_form_form">
+                                        <form id="SearchFilterForm" class="g-form">
+                                            <div id="DateRow" class="g-form-row">
+                                                <div class="g-form-row-label">
+                                                    <label class="g-form-row-label-h" for="name">
+                                                        Date
+                                                    </label>
+                                                </div>
+                                                <div class="g-form-row-field">
+                                                    <select id="Date" name="Date" onchange="FilterDoctors()">
+                                                        <option value="0" selected="selected">All</option>
+                                                        <option value="1">Next Week</option>
+                                                        <option value="2">Two Weeks</option>
+                                                        <option value="3">Next Month</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div id="TherapistRow" class="g-form-row">
+                                                <div class="g-form-row-label">
+                                                    <label class="g-form-row-label-h" for="name">
+                                                        Therapist
+                                                    </label>
+                                                </div>
+                                                <div class="g-form-row-field">
+                                                    <select id="Therapist" name="Therapist" onchange="FilterDoctors()">
+                                                        <option value="0" selected="selected">All</option>
+                                                        @{
+                                                            foreach (Doctors Doc in ViewBag.Doctors)
+                                                            {
+                                                            <option value="@Doc.ID">@Doc.FirstName @Doc.LastName</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div id="SpecialityRow" class="g-form-row">
+                                                <div class="g-form-row-label">
+                                                    <label class="g-form-row-label-h" for="name">
+                                                        Specialty
+                                                    </label>
+                                                </div>
+                                                <div class="g-form-row-field">
+                                                    <select id="Speciality" name="Speciality" onchange="FilterDoctors()">
+                                                        <option value="0" selected="selected">All</option>
+                                                        @{
+                                                            int val = 1;
+                                                            foreach (string SP in ViewBag.SPS)
+                                                            {
+                                                            <option value="@val">@SP.Replace("9", " ")</option>
+                                                                val++;
+                                                            }
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div id="TypeRow" class="g-form-row">
+                                                <div class="g-form-row-label">
+                                                    <label class="g-form-row-label-h" for="name">
+                                                        Type
+                                                    </label>
+                                                </div>
+                                                <div class="g-form-row-field">
+                                                    <select id="Type" name="Type" onchange="FilterDoctors()">
+                                                        <option value="0" disabled="disabled">Both</option>
+                                                        <option value="1" selected="selected">Individual</option>
+                                                        <option value="2" disabled="disabled">Group (Soon)</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div id="LanguageRow" class="g-form-row">
+                                                <div class="g-form-row-label">
+                                                    <label class="g-form-row-label-h" for="name">
+                                                        Language
+                                                    </label>
+                                                </div>
+                                                <div class="g-form-row-field">
+                                                    <select id="Language" name="Language" onchange="FilterDoctors()">
+                                                        <option value="0" selected="selected">All</option>
+                                                        <option value="1">English</option>
+                                                        <option value="2">Arabic</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="two-thirds">
+                                <div class="l-subsection-hh g-html i-cf">
+                                    <div id="Loader" style="position: absolute; z-index: 9999; width: 100%; text-align: center; height: 100%; background-color: #fff; opacity: .7; display: none;">
+                                        <img src="~/content/img/ajax_loader.gif" style="margin-top: 100px; width: 150px; float: right; margin-right: 65%; height: 150px;" />
+                                    </div>
+                                    <div class="w-blog imgpos_atleft more_hidden">
+                                        <div class="w-blog-h">
+                                            <div class="w-blog-list">
+                                                @*@{
+                                                    foreach (Doctors D in ViewBag.Doctors)
+                                                    {
+                                                        List<DoctorsAvailability> LODA = new List<DoctorsAvailability>();
+                                                        LODA = ViewBag.DocAv;
+                                                        LODA = LODA.Where(p => p.DoctorID == D.ID).ToList();
+                                                        if (LODA != null)
+                                                        {
+                                                            foreach (DoctorsAvailability DA in LODA)
+                                                            {
+                                                    <div class="w-blog-entry @Counter">
+                                                        <div id="@D.ID" class="w-blog-entry-h @Counter">
+                                                            <a class="w-blog-entry-link" href="#">
+                                                                <div class="w-blog-entry-preview">
+                                                                    <img src="@D.ProfileImageLink" alt="DoctorImg">
+                                                                </div>
+                                                                <h2 class="w-blog-entry-title" style="margin-bottom: 0px;">
+                                                                    <span class="w-blog-entry-title-h">@D.FirstName @D.LastName</span>
+                                                                </h2>
+                                                            </a>
+                                                            <div class="w-blog-entry-body">
+                                                                <div class="w-blog-entry-meta">
+                                                                    <div class="w-blog-entry-meta-date">
+                                                                        <span id="mounth@(Counter)" class="w-blog-entry-meta-date-month">@DA.Date.ToString("MMM")</span> <span id="day@(Counter)" class="w-blog-entry-meta-date-day">@DA.Date.ToString("dd")</span> <span id="year@(Counter)" class="w-blog-entry-meta-date-year">@DA.Date.ToString("yyyy")</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="w-blog-entry-short">
+                                                                    <p>@D.SP1 &nbsp @D.SP2 &nbsp @D.SP3</p>
+                                                                </div>
+                                                                @{
+                                                                var dateNow = DateTime.UtcNow;
+                                                                var CustomDateFrom = new DateTime(dateNow.Year, dateNow.Month, dateNow.Day, DA.FromTime.Hours, DA.FromTime.Minutes, DA.FromTime.Seconds);
+                                                                var CustomDateTo = new DateTime(dateNow.Year, dateNow.Month, dateNow.Day, DA.ToTime.Hours, DA.ToTime.Minutes, DA.ToTime.Seconds);
+                                                                }
+                                                                <label id="fromTime@(Counter)">@CustomDateFrom.ToString("HH:mm")</label>
+                                                                To
+                                                                <label id="toTime@(Counter)">@CustomDateTo.ToString("HH:mm")</label>
+                                                                <div class="w-blog-entry-short" style="float: right;">
+                                                                    <a class="w-blog-entry-link" href="javascript:GoToProfile(@D.ID);">View Profile
+                                                                    </a>|
+                                                            <a class="w-blog-entry-link" href="javascript:Purchase(@Counter);">Purchase
+                                                            </a>|
+                                                            <label>$@D.SessionPrice</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                                Counter++;
+                                                            }
+                                                        }
+                                                    }
+                                                }*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>

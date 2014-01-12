@@ -1,0 +1,112 @@
+﻿@{
+    ViewBag.Title = "Doctor Dashboard - Nofoos.com";
+    Layout = "~/Views/shared/MasterPage2.cshtml";
+}
+@using GDAL;
+<script>
+    function GoToUpdateProfile() {
+        window.location.href = "/Doctor/UpdateProfile";
+    }
+    $(document).ready(function () {
+        var options = {
+            weekday: "numeric", year: "numeric", month: "numeric",
+            day: "numeric", hour: "numeric", minute: "numeric"
+        };
+        var date = new Date();
+        var Day = date.getDate();
+        var mounth = date.getMonth() + 1;
+        var Year = date.getFullYear();
+        var Time = date.toLocaleTimeString("en-US");
+        var TimeLength = date.toLocaleTimeString("en-US").length;
+        var FullDate = mounth + '/' + Day + '/' + Year + " " + date.toLocaleTimeString("en-US");
+        if (Time.indexOf("GMT") != -1) {
+            FullDate = mounth + '/' + Day + '/' + Year + " " + date.toLocaleTimeString("en-US").substring(0, TimeLength - 5);
+        }
+        $.ajax({
+            url: '/User/SetTO',
+            type: 'post',
+            data: { "_LocalTime": FullDate }
+        });
+    });
+</script>
+<div class="l-main">
+    <div class="l-main-h">
+        <div class="l-subsection">
+            <div class="l-subsection-h">
+
+                <section id="home" class="l-section">
+                    <div class="l-subsection-hh g-html i-cf">
+                        <h2 class="highlight"><strong>Welcome Dr.@ViewBag.currentDoctor.FirstName @ViewBag.currentDoctor.LastName </strong></h2>
+                        <div class="g-hr">
+
+                            <span class="g-hr-h">
+                                <i class="icon-star"></i>
+                            </span>
+
+                        </div>
+                        <div class="g-cols">
+
+                            <div class="two-thirds">
+                                <h3 class="highlight"><strong>My pending Sessions</strong></h3>
+                                @{
+                                    if (ViewBag.DoctorSessions != null)
+                                    
+                                    {
+                                        for (int i = 0; i < ViewBag.DoctorSessions.Count; i++)
+                                        {
+                                    <div class="w-actionbox controls_aside color_primary" style="margin-top: -10px; margin-bottom: 20px;">
+                                        <div class="w-actionbox-h">
+                                            <div class="w-actionbox-text">
+                                                @if (ViewBag.DoctorSessions[i].Type == 1)
+                                                {
+                                                    <h5>@ViewBag.DoctorSessions[i].Users[0].DisplayName</h5>
+                                                    
+                                                }
+                                                else
+                                                {
+                                                    <h5>ViewBag.DoctorSessions[i].Users.Count + " Users"</h5>
+                                                    
+                                                }
+                                                @if (ViewBag.DoctorSessions[i].Status == (int)Status.Started || ViewBag.DoctorSessions[i].Status == (int)Status.Online)
+                                                {
+                                                    <h6 style="color: darkcyan;">@ViewBag.DoctorSessions[i].RemainingToStart</h6>
+                                                    <div class="w-actionbox-controls" style="float: right;">
+                                                        <a class="w-actionbox-button g-btn type_primary size_big" href="/Doctor/DoctorSession/@ViewBag.DoctorSessions[i].ID" target="_blank"><span>Restart Session</span></a>
+                                                    </div>
+                                                }
+                                                else if (ViewBag.DoctorSessions[i].Status == (int)Status.Purchased)
+                                                {
+                                                    TimeSpan TotalDif = DateTime.UtcNow - @ViewBag.DoctorSessions[i].Date;
+                                                    <h6>@ViewBag.DoctorSessions[i].RemainingToStart</h6>
+                                                    if (Math.Abs(TotalDif.TotalMinutes) <= 10 || DateTime.UtcNow > ViewBag.DoctorSessions[i].Date)
+                                                    {
+                                                    <div class="w-actionbox-controls" style="float: right;">
+                                                        <a class="w-actionbox-button g-btn type_primary size_big" href="/Doctor/DoctorSession/@ViewBag.DoctorSessions[i].ID" target="_blank"><span>Start Session</span></a>
+                                                    </div>
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+                                        }
+                                    }
+                                }
+                            </div>
+
+                            <div class="one-third">
+
+                                <button class="g-btn type_secondary size_big" style="margin-top: 60px;" onclick="GoToUpdateProfile()"><span><i class="icon-pencil"></i>Update My Profile</span></button>
+                                <button class="g-btn type_secondary size_big" style="margin-top: 5px;" onclick="javascript:window.location.href ='/Doctor/DoctorHistory';"><span><i class="icon-search"></i>View Sessions History</span></button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </section>
+
+            </div>
+        </div>
+
+    </div>
+</div>

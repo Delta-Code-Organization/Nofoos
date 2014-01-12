@@ -1,0 +1,254 @@
+﻿@{
+    ViewBag.Title = "سجل جلسات المستخدم";
+    Layout = "~/Views/shared/MasterPage2Ar.cshtml";
+}
+
+@using GDAL;
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        Filter();
+    });
+
+    function convertDate(inputFormat) {
+        var d = new Date(inputFormat);
+        return [d.getDate(), d.getMonth() + 1, d.getFullYear()].join('/');
+    }
+
+    function isEmpty(obj) {
+        for (var prop in obj) {
+            if (obj.hasOwnProperty(prop))
+                return false;
+        }
+
+        return true;
+    }
+
+    function Getmounthintext(inputFormat) {
+        var d = new Date(inputFormat);
+        var month = new Array();
+        month[0] = "يناير";
+        month[1] = "فبراير";
+        month[2] = "مارس";
+        month[3] = "أبريل";
+        month[4] = "مايو";
+        month[5] = "يونيو";
+        month[6] = "يوليو";
+        month[7] = "أغسطس";
+        month[8] = "سبتمبر";
+        month[9] = "أكتوبر";
+        month[10] = "نوفمبر";
+        month[11] = "ديسمبر";
+        var n = month[d.getMonth()];
+        return n;
+    }
+
+    function Filter() {
+        var data;
+        var DateText = $('#DateInput').val();
+        var SID = $('#StatusInput').val();
+        if (DateText == "") {
+            DateText = "null";
+        }
+        data = { 'Date': DateText,'Status': SID };
+        $.ajax({
+            url: '/User/FilterSessions',
+            type: 'post',
+            data: data,
+            beforeSend: function () {
+                $('#Loader').css({ 'display': 'block' });
+            },
+            complete: function () {
+                $('#Loader').css({ 'display': 'none' });
+            },
+            success: function (data) {
+                $('.w-blog-list').empty();
+                if (data == "notlogged")
+                {
+                    window.location.href = "/User/Login";
+                }
+                if (isEmpty(data) == true) {
+                    $('.w-blog-list').append('<div class="g-alert type_info">'
+                    + '<div class="g-alert-body" style="text-align:center;width:100%;">'
+                        + '<p style="font-family:' + 'GE SS Two Light' + ';"><strong >لم يتم العثور على نتائج</strong></br>من فضلك قم بالبحث مرة أخرى بإستخدام بيانات بحث جديدة</p>'
+                    + '</div>'
+                + '</div>');
+                    return;
+                }
+                $.each(data, function (Index, Custom) {
+
+                    var textstatus;
+                    switch(Custom.Status)
+                        {
+                        case 2:
+                            textstatus = "بدأت";
+                            break;
+                        case 3:
+                            textstatus = "أغلقت";
+                            break;
+                        case 4:
+                            textstatus = "منتهية";
+                            break;
+                        case 5:
+                            textstatus = "حالية";
+                            break;
+                        case 7:
+                            textstatus = "ملغاة";
+                            break;
+                        case 8:
+                            textstatus = "تم الحجز";
+                            break;
+                        case 10:
+                            textstatus = "منتظرة";
+                            break;
+                        case 12:
+                            textstatus = "لم يتم الدفع";
+                    }
+                    var milli = Custom.Date.replace(/\/Date\((-?\d+)\)\//, '$1');
+                    var SessionDate = new Date(parseInt(milli));
+                    var mounthOnly = Getmounthintext(SessionDate);
+                    var dayOnly = SessionDate.getDate();
+                    var yearOnly = SessionDate.getFullYear();
+                    $('.w-blog-list').append('<div class="w-blog-entry ' + Custom.ID + '">'
+                                                    + '<div class="w-blog-entry-h">'
+                                                        + '<a class="w-blog-entry-link" href="#">'
+                                                            + '<div class="w-blog-entry-preview">'
+                                                                + '<img src="' + Custom.Therapist.ProfileImageLink + '" alt="">'
+                                                            + '</div>'
+                                                            + '<h2 class="w-blog-entry-title">'
+                                                                + '<span class="w-blog-entry-title-h" style="font-size: 20px;direction:rtl;">' + Custom.Users[0].DisplayName + ' مع ' + Custom.Therapist.FirstName + ' ' + Custom.Therapist.LastName + '.د<br/></span>'
+                                                                + '<span class="w-blog-entry-title-h" style="font-size: 20px;margin-top:30px;font-family:'+'GE SS Two Light'+';"> الحالة : ' + textstatus + ' ' +'<br/><br/></span>'
+                                                            + '</h2>'
+                                                        + '</a>'
+                                                        + '<div class="w-blog-entry-body">'
+                                                            + '<div class="w-blog-entry-meta">'
+                                                                + '<div class="w-blog-entry-meta-date">'
+                                                                    + '<span class="w-blog-entry-meta-date-month" style="font-family:'+'GE SS Two Light'+';">' + mounthOnly + '</span>'
+                                                                    + '<span class="w-blog-entry-meta-date-day">' + dayOnly + '</span>'
+                                                                    + '<span class="w-blog-entry-meta-date-year">' + yearOnly + '</span>'
+                                                                + '</div>'
+                                                            + '</div>'
+                                                        + '</div>'
+                                                    + '</div>'
+                                                + '</div>');
+                });
+            },
+            error: function (data) {
+               console.log(data.responseText);
+            }
+        });
+    }
+
+</script>
+
+<div class="l-main">
+    <div class="l-main-h">
+        <div class="l-subsection">
+            <div class="l-subsection-h">
+                <section id="SearchSessions" class="l-section">
+                    <div class="l-subsection-hh g-html i-cf">
+                        <h2 class="highlight"><strong style="font-family:'GE SS Two Light';">سجل جلساتى</strong></h2>
+                        <div class="g-cols">
+                            
+                            <div class="two-thirds">
+                                <div class="l-subsection-hh g-html i-cf">
+                                    <div id="Loader" style="position:absolute; z-index:9999; width:100%; text-align:center; height:100%; background-color:#fff; opacity:.7; display:none;">
+                                        <img src="~/content/img/ajax_loader.gif" style="margin-top:100px; width:150px; float:right; margin-right:60%; height:150px;" />
+                                    </div>
+                                    <div class="w-blog imgpos_atleft more_hidden">
+                                        <div class="w-blog-h">
+                                            <div class="w-blog-list">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="one-third">
+                                <p class="subtitle" style="font-family:'GE SS Two Light';">
+                                    بيانات البحث
+                                </p>
+                                <div class="w-form contacts_form">
+                                    <div class="w-form-h contacts_form_form">
+                                        <form id="SearchFilterForm" class="g-form">
+                                            <div id="TherapistRow" class="g-form-row">
+                                                <div class="g-form-row-label" style="font-family:'GE SS Two Light';text-align:right;">
+                                                    <label class="g-form-row-label-h" for="name">
+                                                        التاريخ
+                                                    </label>
+                                                </div>
+                                                <div class="g-form-row-field">
+                                                    <input type="text" id="DateInput" name="date" placeholder="dd/mm/yyyy" />
+                                                </div>
+                                            </div>
+                                            @*<div id="SpecialityRow" class="g-form-row">
+                                                <div class="g-form-row-label">
+                                                    <label class="g-form-row-label-h" for="name">
+                                                        Doctor
+                                                    </label>
+                                                </div>
+                                                <div class="g-form-row-field">
+                                                    <select id="DoctorInput">
+                                                        <option value="0"></option>
+                                                        @{
+                                                            foreach (Doctors D in ViewBag.Doctors)
+                                                            {
+                                                            <option value="@D.ID">@D.FirstName @D.LastName</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>*@
+                                            @*<div id="TypeRow1" class="g-form-row">
+                                                <div class="g-form-row-label">
+                                                    <label class="g-form-row-label-h" for="name">
+                                                        User
+                                                    </label>
+                                                </div>
+                                                <div class="g-form-row-field">
+                                                    <select id="UserInput">
+                                                        <option value="0"></option>
+                                                        @{
+                                                            foreach (Users U in ViewBag.Users)
+                                                            {
+                                                            <option value="@U.ID">@U.Username</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>*@
+                                            <div id="TypeRow" class="g-form-row">
+                                                <div class="g-form-row-label" style="font-family:'GE SS Two Light';text-align:right;">
+                                                    <label class="g-form-row-label-h" for="name">
+                                                        الحالة
+                                                    </label>
+                                                </div>
+                                                <div class="g-form-row-field">
+                                                    <select id="StatusInput">
+                                                        <option value="2500">الكل</option>
+                                                        <option value="10">منتظرة</option>
+                                                        <option value="2">بدأت</option>
+                                                        <option value="4">إنتهت</option>
+                                                        <option value="7">ملغاة</option>
+                                                        <option value="12">لم تدفع</option>
+                                                        <option value="5">حالية</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div id="TypeRow22" class="g-form-row">
+                                                <div class="g-form-row-field">
+                                                    <button class="g-btn type_primary size_small" onclick="Filter();">
+                                                        <span style="font-family:'GE SS Two Light';"><i class="icon-search"></i>بحث</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>

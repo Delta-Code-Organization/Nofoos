@@ -1,0 +1,388 @@
+﻿@{
+    ViewBag.Title = "SearchDoctors";
+    Layout = "~/Views/shared/MasterPage2.cshtml";
+    int Counter = 0;
+}
+
+@using GDAL;
+
+<script>
+    var counter = 0;
+    function isEmpty(obj) {
+        for (var prop in obj) {
+            if (obj.hasOwnProperty(prop))
+                return false;
+        }
+        return true;
+    }
+
+    function FilterDoctors() {
+        var Thir = $('#Thirapist').val();
+        var Status = $('#Status').val();
+        if ($('#Thirapist').val() == "") {
+            Thir = "Empty";
+        }
+        var data = { 'Thirapist': Thir, 'Status': Status };
+        $.ajax({
+            url: '/Admin/Filter',
+            type: 'post',
+            data: data,
+            beforeSend: function () {
+                $('#Loader').css({ 'display': 'block' });
+            },
+            complete: function () {
+                $('#Loader').css({ 'display': 'none' });
+            },
+            success: function (data) {
+                $('.w-blog-list').empty();
+                if (isEmpty(data)) {
+                    $('.w-blog-list').append('<div class="g-alert type_info">'
+                + '<div class="g-alert-body" style="text-align:center;width:100%;">'
+                    + '<p><strong>No Result Found</strong></br> Please search again, there are no results for your current search criteria.</p>'
+                + '</div>'
+            + '</div>');
+                    return;
+                }
+                $.each(data, function (Index, Doctor) {
+                    if (Doctor.Status == 10) {
+                        $('.w-blog-list').append('<div class="w-blog-entry ' + Doctor.ID + ' "style="margin-top: 50px;">'
+                                                    + '<div id="' + Doctor.ID + '" class="w-blog-entry-h ' + counter + '">'
+                                                        + '<a class="w-blog-entry-link" href="#">'
+                                                            + '<div class="w-blog-entry-preview">'
+                                                                + '<img src="' + Doctor.ProfileImageLink + '" alt="DoctorImg">'
+                                                            + '</div>'
+                                                            + '<h2 class="w-blog-entry-title" style="margin-bottom: 0px;">'
+                                                                + '<span class="w-blog-entry-title-h" style="margin-left: 0px;">' + Doctor.FirstName + ' ' + Doctor.LastName + '</span>'
+                                                            + '</h2>'
+                                                        + '</a>'
+                                                        + '<div class="w-blog-entry-body">'
+                                                            + '<div class="w-blog-entry-meta">'
+                                                                + '<div class="w-blog-entry-meta-date">'
+                                                                + '</div>'
+                                                            + '</div>'
+                                                            + '<div class="w-blog-entry-short">'
+                                                            + '</div>'
+                                                            + '<label id=""></label>'
+                                                            + '<label></label>'
+                                                            + '<div class="w-blog-entry-short" style="float: right;">'
+                                                                + '<button class="g-btn type_primary size_small" onclick="Approve(' + counter + ');">'
+                                                                    + '<span>'
+                                                                        + '<i class="icon-check"></i>'
+                                                            + 'Approve'
+                                                        + '</span>'
+                                                    + '</button>'
+                                                    + '<label></label>'
+                                                + '</div>'
+                                            + '</div>'
+                                        + '</div>'
+                                    + '</div>');
+                    }
+                    if (Doctor.Status == 0) {
+                        $('.w-blog-list').append('<div class="w-blog-entry ' + Doctor.ID + '" style="margin-top: 50px;">'
+                                                    + '<div id="' + Doctor.ID + '" class="w-blog-entry-h ' + counter + '">'
+                                                        + '<a class="w-blog-entry-link" href="#">'
+                                                            + '<div class="w-blog-entry-preview">'
+                                                                + '<img src="' + Doctor.ProfileImageLink + '" alt="DoctorImg">'
+                                                            + '</div>'
+                                                            + '<h2 class="w-blog-entry-title" style="margin-bottom: 0px;">'
+                                                                + '<span class="w-blog-entry-title-h" style="margin-left: 0px;">' + Doctor.FirstName + ' ' + Doctor.LastName + '</span>'
+                                                            + '</h2>'
+                                                        + '</a>'
+                                                        + '<div class="w-blog-entry-body">'
+                                                            + '<div class="w-blog-entry-meta">'
+                                                                + '<div class="w-blog-entry-meta-date">'
+                                                                + '</div>'
+                                                            + '</div>'
+                                                            + '<div class="w-blog-entry-short">'
+                                                            + '</div>'
+                                                            + '<label id=""></label>'
+                                                            + '<label></label>'
+                                                            + '<div class="w-blog-entry-short" style="float: right;">'
+                                                                + '<button class="g-btn type_default size_small" onclick="Unsuspend(' + counter + ');">'
+                                                                    + '<span>'
+                                                                        + '<i class="icon-check"></i>'
+                                                                            + 'Unsuspend'
+                                                                        + '</span>'
+                                                                + '</button>'
+                                                    + '<label></label>'
+                                                + '</div>'
+                                            + '</div>'
+                                        + '</div>'
+                                    + '</div>');
+                    }
+                    if (Doctor.Status == 1) {
+                        $('.w-blog-list').append('<div class="w-blog-entry ' + Doctor.ID + '" style="margin-top: 50px;">'
+                                                    + '<div id="' + Doctor.ID + '" class="w-blog-entry-h ' + counter + '">'
+                                                        + '<a class="w-blog-entry-link" href="#">'
+                                                            + '<div class="w-blog-entry-preview">'
+                                                                + '<img src="' + Doctor.ProfileImageLink + '" alt="DoctorImg">'
+                                                            + '</div>'
+                                                            + '<h2 class="w-blog-entry-title" style="margin-bottom: 0px;">'
+                                                                + '<span class="w-blog-entry-title-h" style="margin-left: 0px;">' + Doctor.FirstName + ' ' + Doctor.LastName + '</span>'
+                                                            + '</h2>'
+                                                        + '</a>'
+                                                        + '<div class="w-blog-entry-body">'
+                                                            + '<div class="w-blog-entry-meta">'
+                                                                + '<div class="w-blog-entry-meta-date">'
+                                                                + '</div>'
+                                                            + '</div>'
+                                                            + '<div class="w-blog-entry-short">'
+                                                            + '</div>'
+                                                            + '<label id=""></label>'
+                                                            + '<label></label>'
+                                                            + '<div class="w-blog-entry-short" style="float: right;">'
+                                                                + '<button class="g-btn type_secondary size_small" onclick="Suspend(' + counter + ');">'
+                                                                    + '<span>'
+                                                                        + '<i class="icon-check"></i>'
+                                                                        + 'Suspend'
+                                                                    + '</span>'
+                                                                + '</button>'
+                                                    + '<label></label>'
+                                                + '</div>'
+                                            + '</div>'
+                                        + '</div>'
+                                    + '</div>');
+                    }
+                    counter++;
+                });
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+    }
+
+    function Suspend(Counter) {
+        var DID = $('.w-blog-entry-h.' + Counter).attr("id");
+        var data = { 'ID': DID };
+        $.ajax({
+            url: '/Doctor/Suspend',
+            type: 'post',
+            data: data,
+            success: function (data) {
+                if (data == "true") {
+                    $('.w-blog-entry.' + DID).fadeOut(1000);
+                }
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+    }
+
+    function Approve(Counter) {
+        var DID = $('.w-blog-entry-h.' + Counter).attr("id");
+        var data = { 'ID': DID };
+        $.ajax({
+            url: '/Doctor/Approve',
+            type: 'post',
+            data: data,
+            success: function (data) {
+                if (data == "true") {
+                    $('.w-blog-entry.' + DID).fadeOut(1000);
+                }
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+    }
+
+    function Unsuspend(Counter) {
+        var DID = $('.w-blog-entry-h.' + Counter).attr("id");
+        var data = { 'ID': DID };
+        $.ajax({
+            url: '/Doctor/Unsuspend',
+            type: 'post',
+            data: data,
+            success: function (data) {
+                if (data == "true") {
+                    $('.w-blog-entry.' + DID).fadeOut(1000);
+                }
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+    }
+
+    $(function () {
+        $('#Thirapist').keyup(function (e) {
+            FilterDoctors();
+        });
+    });
+</script>
+
+<div class="l-main">
+    <div class="l-main-h">
+        <div class="l-subsection">
+            <div class="l-subsection-h">
+                <section id="SearchSessions" class="l-section">
+                    <div class="l-subsection-hh g-html i-cf">
+                        <div class="g-cols" style="margin-bottom: 100px;">
+                            <div class="one-third">
+                                <p class="subtitle">
+                                    Search Filter
+                                </p>
+                                <div class="w-form contacts_form">
+                                    <div class="w-form-h contacts_form_form">
+                                        <form id="SearchFilterForm" class="g-form">
+                                            <div id="TherapistRow" class="g-form-row">
+                                                <div class="g-form-row-label">
+                                                    <label class="g-form-row-label-h" for="name">
+                                                        Therapist
+                                                    </label>
+                                                </div>
+                                                <div class="g-form-row-field">
+                                                    <i class="icon-search"></i>
+                                                    <input id="Thirapist" type="text" name="Thirapist"></input>
+                                                </div>
+                                            </div>
+                                            <div id="StatusRow" class="g-form-row">
+                                                <div class="g-form-row-label">
+                                                    <label class="g-form-row-label-h" for="name">
+                                                        Status
+                                                    </label>
+                                                </div>
+                                                <div class="g-form-row-field">
+                                                    <select id="Status" name="Status" onchange="FilterDoctors()">
+                                                        <option value="2500">All</option>
+                                                        <option value="1">Active</option>
+                                                        <option value="10">Pending</option>
+                                                        <option value="0">Suspended</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="two-thirds">
+                                <div class="l-subsection-hh g-html i-cf">
+                                    <div id="Loader" style="position:absolute; z-index:9999; width:100%; text-align:center; height:100%; background-color:#fff; opacity:.7; display:none;">
+                                        <img src="~/content/img/ajax_loader.gif" style="margin-top:100px; width:150px; float:right; margin-right:65%; height:150px;" />
+                                    </div>
+                                    <div class="w-blog imgpos_atleft more_hidden">
+                                        <div class="w-blog-h">
+                                            <div class="w-blog-list">
+                                                @{
+                                                    foreach (Doctors D in ViewBag.Doctors)
+                                                    {
+                                                        if (D.Status == (int)Status.Pending)
+                                                        {
+                                                    <div class="w-blog-entry @D.ID" style="margin-top: 50px;">
+                                                        <div id="@D.ID" class="w-blog-entry-h @Counter">
+                                                            <a class="w-blog-entry-link" href="#">
+                                                                <div class="w-blog-entry-preview">
+                                                                    <img src="@D.ProfileImageLink" alt="DoctorImg">
+                                                                </div>
+                                                                <h2 class="w-blog-entry-title" style="margin-bottom: 0px;">
+                                                                    <span class="w-blog-entry-title-h" style="margin-left: 0px;">@D.FirstName @D.LastName</span>
+                                                                </h2>
+                                                            </a>
+                                                            <div class="w-blog-entry-body">
+                                                                <div class="w-blog-entry-meta">
+                                                                    <div class="w-blog-entry-meta-date">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="w-blog-entry-short">
+                                                                </div>
+                                                                <label id=""></label>
+                                                                <label></label>
+                                                                <div class="w-blog-entry-short" style="float: right;">
+                                                                    <button class="g-btn type_primary size_small" onclick="Approve(@Counter);">
+                                                                        <span>
+                                                                            <i class="icon-check"></i>
+                                                                            Approve
+                                                                        </span>
+                                                                    </button>
+                                                                    <label></label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                        }
+                                                        if (D.Status == (int)Status.Disabled)
+                                                        {
+                                                    <div class="w-blog-entry @D.ID" style="margin-top: 50px;">
+                                                        <div id="@D.ID" class="w-blog-entry-h @Counter">
+                                                            <a class="w-blog-entry-link" href="#">
+                                                                <div class="w-blog-entry-preview">
+                                                                    <img src="@D.ProfileImageLink" alt="DoctorImg">
+                                                                </div>
+                                                                <h2 class="w-blog-entry-title" style="margin-bottom: 0px;">
+                                                                    <span class="w-blog-entry-title-h" style="margin-left: 0px;">@D.FirstName @D.LastName</span>
+                                                                </h2>
+                                                            </a>
+                                                            <div class="w-blog-entry-body">
+                                                                <div class="w-blog-entry-meta">
+                                                                    <div class="w-blog-entry-meta-date">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="w-blog-entry-short">
+                                                                </div>
+                                                                <label id=""></label>
+                                                                <label></label>
+                                                                <div class="w-blog-entry-short" style="float: right;">
+                                                                    <button class="g-btn type_default size_small" onclick="Unsuspend(@Counter)">
+                                                                        <span>
+                                                                            <i class="icon-check"></i>
+                                                                            Unsuspend
+                                                                        </span>
+                                                                    </button>
+                                                                    <label></label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                        }
+                                                        if (D.Status == (int)Status.Enabled)
+                                                        {
+                                                    <div class="w-blog-entry @D.ID" style="margin-top: 50px;">
+                                                        <div id="@D.ID" class="w-blog-entry-h @Counter">
+                                                            <a class="w-blog-entry-link" href="#">
+                                                                <div class="w-blog-entry-preview">
+                                                                    <img src="@D.ProfileImageLink" alt="DoctorImg">
+                                                                </div>
+                                                                <h2 class="w-blog-entry-title" style="margin-bottom: 0px;">
+                                                                    <span class="w-blog-entry-title-h" style="margin-left: 0px;">@D.FirstName @D.LastName</span>
+                                                                </h2>
+                                                            </a>
+                                                            <div class="w-blog-entry-body">
+                                                                <div class="w-blog-entry-meta">
+                                                                    <div class="w-blog-entry-meta-date">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="w-blog-entry-short">
+                                                                </div>
+                                                                <label id=""></label>
+                                                                <label></label>
+                                                                <div class="w-blog-entry-short" style="float: right;">
+                                                                    <button class="g-btn type_secondary size_small" onclick="Suspend(@Counter);">
+                                                                        <span>
+                                                                            <i class="icon-check"></i>
+                                                                            Suspend
+                                                                        </span>
+                                                                    </button>
+                                                                    <label></label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                        }
+                                                        Counter++;
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+

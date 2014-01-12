@@ -1,0 +1,42 @@
+﻿@{
+    ViewBag.Title = "خطأ فى الدفع";
+    Layout = "~/Views/shared/MasterPage2Ar.cshtml";
+}
+
+@using GDAL;
+<div class="l-main">
+    <div class="l-main-h">
+        <div class="l-subsection" style="height: 100%;">
+            <div class="l-subsection-h">
+                <section id="home" class="l-section">
+                    <div class="l-subsection-hh g-html i-cf">
+
+                        <div class="g-alert type_error with_close">
+
+                            <div class="g-alert-close">
+                                ✕ 
+                            </div>
+                            <div class="g-alert-body">
+                                <p>
+                                    <strong>
+
+                                        @ViewBag.Msg
+
+
+                                    </strong>
+
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </section>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

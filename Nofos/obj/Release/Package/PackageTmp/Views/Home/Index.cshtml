@@ -1,0 +1,878 @@
+﻿@{
+    ViewBag.Title = "Nofoos.com - free your self";
+    Layout = "~/Views/shared/MasterPage.cshtml";
+}
+@using GDAL;
+
+
+<script type="text/ecmascript">
+    $(document).ready(function () {
+        var options = {
+            weekday: "numeric", year: "numeric", month: "numeric",
+            day: "numeric", hour: "numeric", minute: "numeric"
+        };
+        var date = new Date();
+        var Day = date.getDate();
+        var mounth = date.getMonth() + 1;
+        var Year = date.getFullYear();
+        var Time = date.toLocaleTimeString("en-US");
+        var TimeLength = date.toLocaleTimeString("en-US").length;
+        var FullDate = mounth + '/' + Day + '/' + Year + " " + date.toLocaleTimeString("en-US");
+        if (Time.indexOf("GMT") != -1) {
+            FullDate = mounth + '/' + Day + '/' + Year + " " + date.toLocaleTimeString("en-US").substring(0, TimeLength - 5);
+        }
+        $.ajax({
+            url: '/User/SetTO',
+            type: 'post',
+            data: { "_LocalTime": FullDate }
+        });
+    });
+    $(document).ready(function () {
+
+        $('#contact_form').validate({
+
+            rules: {
+                name: {
+                    required: true,
+                    minlength: 5
+                },
+                email: {
+                    required: true
+                },
+                phone: {
+                    required: true
+
+                },
+                message: {
+                    required: true,
+                    minlength: 100
+                }
+            },
+            messages: {
+                name: {
+                    required: "please enter your Name",
+                    minlength: "5 characters as minimum "
+                },
+                email: {
+                    required: "please enter your Email"
+                },
+                phone: {
+                    required: "please enter your Phone"
+                },
+                message: {
+                    required: "please type your text message",
+                    minlength: "100 characters as minimum"
+                }
+            },
+            submitHandler: function (form) { // for demo
+                $(function () {
+                    var name = $('#name').val();
+                    var email = $('#email').val();
+                    var phone = $('#phone').val();
+                    var message = $('#message').val();
+
+                    var data = { '_Name': name, '_Email': email, "_phone": phone, '_Message': message };
+                    $.ajax({
+                        url: '/Home/SendEmail',
+                        type: 'post',
+                        data: data,
+                        beforeSend: function () {
+
+                            $('#message_send').attr("disabled", "disabled");
+
+                        },
+                        complete: function () {
+
+                            $('#message_send').attr("disabled", "enabled");
+                        },
+                        success: function (data) {
+
+                        },
+                        error: function (data) {
+                            console.log(data.responseText);
+                        }
+                    });
+                });
+            }
+        });
+
+    });
+
+    function FindSessionNow()
+    {
+        
+        $.ajax({
+            url: '/User/FindSessionNow',
+            type: 'post',
+            data: {},
+            beforeSend: function () {
+
+            },
+            complete: function () {
+     
+            },
+            success: function (data) {
+                if (data == "NoSessions") {
+                    window.location.href = "/Doctor/SearchSessions";
+                }
+                else
+                {
+                    window.location.href = "/Doctor/Purchase/" + data.ID+"?MSG=1";
+                }
+            },
+            error: function (data) {
+                console.log(data.responseText);
+            }
+        });
+    }
+
+    function ShowDetailsPage(ID)
+    {
+
+        window.open('', '_new').location.href = "/Home/PostDetails/" + ID;
+    }
+
+</script>
+<!-- MAIN -->
+<div class="l-main">
+    <div class="l-main-h">
+
+        <!-- page: HOME -->
+        <section id="home" class="l-section">
+
+            <div id="parallax_subsection_0" class="l-subsection color_dark with_parallax" style="background-image: url(/content/img/Girlongrass.jpg);">
+                <div class="l-subsection-h">
+                    <div class="l-subsection-hh g-html i-cf">
+                        <h1 class="home-heading">
+                            <br />
+                            <br />
+                            <br />
+                            <span class="home-heading-line">Talk to A psychologist now</span>
+                        </h1>
+
+                        @if (Session["user"] == null && Session["Doctor"] == null)
+                        { 
+                            
+                       
+                            
+                            <a class="g-btn type_default size_big" href="@Url.Action("Login", "User")"><span>Login</span></a>
+                            <a class="g-btn type_primary size_big" href="javascript:FindSessionNow();"><span>Book A session Now</span></a>
+                            
+                        }
+                        else
+                        {
+
+                        }
+
+
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- page: ABOUT -->
+        <section id="about" class="l-section">
+
+            <div class="l-subsection">
+                <div class="l-subsection-h">
+                    <div class="l-subsection-hh g-html i-cf">
+
+                        <h2><strong>About Nofoos</strong></h2>
+
+                        <div class="g-hr type_short">
+                            <span class="g-hr-h">
+                                <i class="icon-heart"></i>
+                            </span>
+                        </div>
+
+                        <p class="subtitle">
+                            <strong class="highlight">Nofoos offers same offline psychologist'/client experience, or higher, without going into a clinic.</strong>
+                        </p>
+
+                        <div class="g-hr type_invisible"></div>
+
+
+                        <p class="size_big">
+                            The Nofoos team consists only of certified psychologists following the highest international standards of professional code of conduct and confidentiality.
+With regular supervision in accordance with the ethical framework of the British Association of Counseling and Psychiatry and the British psychological society.
+                        </p>
+
+                        <p class="subtitle">
+                            <span class="highlight">Nofoos offers
+                            </span>
+                        </p>
+                        <ul style="text-align: left;">
+                            <li>One on one sessions</li>
+                            <li>Group sessions (Comming soon)</li>
+                            <li>Free awareness raising videos to help concerned people, family<br />
+                                and friends find solutions for their psychological challenges.
+                            </li>
+                        </ul>
+
+
+                        <p class="subtitle">
+                            <span class="highlight">Focus Areas
+                            </span>
+                        </p>
+
+                        <div class="w-tabs layout_accordion">
+                            <div class="w-tabs-h">
+                                <div class="w-tabs-section">
+                                    <div class="w-tabs-section-title">
+                                        <span class="w-tabs-section-title-icon"></span>
+                                        <span class="w-tabs-section-title-text">1. General</span>
+                                        <span class="w-tabs-section-title-control"><i class="icon-angle-down"></i></span>
+                                    </div>
+                                    <div style="display: none;" class="w-tabs-section-content">
+                                        <div class="w-tabs-section-content-h">
+                                            <p>@*Nofoos offers you the same offline psychological help experience, or higher, without going into a clinic. Nofoos is here to help concerned people, close families and friends find solutions in a challenging time.*@</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w-tabs-section">
+                                    <div class="w-tabs-section-title">
+                                        <span class="w-tabs-section-title-icon"></span>
+                                        <span class="w-tabs-section-title-text">2. Child and adolescents psychology</span>
+                                        <span class="w-tabs-section-title-control"><i class="icon-angle-down"></i></span>
+                                    </div>
+                                    <div style="display: none;" class="w-tabs-section-content">
+                                        <div class="w-tabs-section-content-h">
+                                            <p>@*Nofoos offers you the same offline psychological help experience, or higher, without going into a clinic. Nofoos is here to help concerned people, close families and friends find solutions in a challenging time.*@</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w-tabs-section">
+                                    <div class="w-tabs-section-title">
+                                        <span class="w-tabs-section-title-icon"></span>
+                                        <span class="w-tabs-section-title-text">3. Relationships and couples counseling</span>
+                                        <span class="w-tabs-section-title-control"><i class="icon-angle-down"></i></span>
+                                    </div>
+                                    <div style="display: none;" class="w-tabs-section-content">
+                                        <div class="w-tabs-section-content-h">
+                                            <p>
+                                                @*<b>Professional code of conduct</b><br />
+                                                Our team consists only of certified psychologists either from The United Kingdom or the United States, we follow the ethical framework of the British Association of Counseling and Psychotherapy, and the British Psychological Society.
+                                                <br />
+                                                <b>Respect</b><br />
+                                                Respect is a core value that we abide by.  Respect toward oneself, to one-another and to our valued clients.
+                                                <br />
+                                                <b>Life is about choices</b><br />
+                                                We are here to offer you more choices in life to live better, excel and reach your full potential, or even completely reinvent yourself and your life. We is not here to judge, and we are not here to lead your life, ware here to listen, understand and offer help.*@
+
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w-tabs-section">
+                                    <div class="w-tabs-section-title">
+                                        <span class="w-tabs-section-title-icon"></span>
+                                        <span class="w-tabs-section-title-text">4. Older adults and family support</span>
+                                        <span class="w-tabs-section-title-control"><i class="icon-angle-down"></i></span>
+                                    </div>
+                                    <div style="display: none;" class="w-tabs-section-content">
+                                        <div class="w-tabs-section-content-h">
+                                            <p>
+                                                @* In its first phase, We focus on:<br />
+                                                -Child & adolescents' psychology<br />
+                                                -Relationships and couples counseling<br />
+                                                -Older adults and family support<br />
+                                                -Addiction and dependencies
+                                                <br />
+                                                -Eating disorder*@
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w-tabs-section">
+                                    <div class="w-tabs-section-title">
+                                        <span class="w-tabs-section-title-icon"></span>
+                                        <span class="w-tabs-section-title-text">5. Eating Disorder</span>
+                                        <span class="w-tabs-section-title-control"><i class="icon-angle-down"></i></span>
+                                    </div>
+                                    <div style="display: none;" class="w-tabs-section-content">
+                                        <div class="w-tabs-section-content-h">
+                                            <p>
+                                                @* Nofoos will not record any audio or video sessions. Our psychologists took an oath of secrecy, preserving the confidentiality of all clients and their family members. We will treat your information with the utmost secrecy and confidentiality abiding by the international standard of psychologist/patient code of conduct.*@
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w-tabs-section">
+                                    <div class="w-tabs-section-title">
+                                        <span class="w-tabs-section-title-icon"></span>
+                                        <span class="w-tabs-section-title-text">6. Addiction and dependencies</span>
+                                        <span class="w-tabs-section-title-control"><i class="icon-angle-down"></i></span>
+                                    </div>
+                                    <div style="display: none;" class="w-tabs-section-content">
+                                        <div class="w-tabs-section-content-h">
+                                            <p>@*No. Our psychologists took an oath of secrecy, preserving the confidentiality of all clients and their family members. Our psychologists will accept all information provided as correct and will treat it as strictly confidential and not to be shared with third parties under any circumstances. These strict conditions are to be leveled only in the unlikely incident of the infliction of harm on oneself or another.*@</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <p class="size_big" style="text-align: left; margin-top: 50px;">
+                            Online therapy has shown effectiveness in many situations, especially within conservative cultures into helping those in need of psychological professional help. 
+                        </p>
+                        <p class="size_big" style="text-align: left;">
+                            It is also a crucial solution for those who feel uncomfortable attending traditional face-to-face sessions or support groups.
+                        </p>
+                        <p class="size_big" style="text-align: left;">
+                            It also eliminates geographic restraints, offering professional help to people in remote cities, disabled or housebound.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="l-subsection color_alternate">
+                <div class="l-subsection-h">
+                    <div class="l-subsection-hh g-html i-cf">
+
+                        <p class="subtitle">What we do?</p>
+                        <h3 class="highlight"><strong>Online sessions with professional therapist in 3 easy steps</strong></h3>
+
+                        <div class="g-hr type_invisible"></div>
+
+                        <div class="g-cols">
+                            <div class="one-third">
+                                <a href="/user/register">
+                                    <div class="w-iconbox iconpos_top with_circle">
+                                        <img src="~/content/img/step1.png" />
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="one-third">
+                                <a href="/user/login">
+                                    <div class="w-iconbox iconpos_top with_circle">
+                                        <img src="~/content/img/step2.png" />
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="one-third">
+                                <a href="/doctor/searchsessions">
+                                    <div class="w-iconbox iconpos_top with_circle">
+                                        <img src="~/content/img/step3.png" />
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="g-hr type_invisible"></div>
+
+                        <a class="g-btn type_default" href="@Url.Action("SearchSessions", "Doctor")"><span><i class="icon-arrow-down"></i>Find a Therapist</span></a>
+
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+        </section>
+
+
+
+        <!-- page: OurPsychologist -->
+        <section id="OurPsychologist" class="l-section">
+
+            <div class="l-subsection full_height">
+                <div class="l-subsection-h">
+                    <div class="l-subsection-hh g-html i-cf">
+
+                        <div class="g-hr type_invisible"></div>
+
+                        <h2>Our Team<br>
+                        </h2>
+
+
+                        <div class="w-icon size_small with_circle color_border">
+                            <span class="w-icon-link">
+                                <i class="icon-chevron-down"></i>
+                            </span>
+                        </div>
+
+                        <div class="g-hr type_invisible"></div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="l-subsection full_width full_height">
+                <div class="l-subsection-h">
+                    <div class="l-subsection-hh g-html i-cf">
+
+                        <div class="w-portfolio">
+                            <div class="w-portfolio-h">
+                                <div class="w-portfolio-list">
+                                    <div class="w-portfolio-list-h">
+
+                                        @{
+                                            foreach (Doctors D in ViewBag.OurPsychologists)
+                                            {
+                                            <div class="w-portfolio-item">
+                                                <div class="w-portfolio-item-h">
+                                                    <a class="w-portfolio-item-anchor" href="javascript:void(0);">
+                                                        <div class="w-portfolio-item-image" style="background-image: url(@D.ProfileImageLink);"></div>
+                                                        <div class="w-portfolio-item-meta">
+                                                            <h2 class="w-portfolio-item-title">@D.FirstName @D.LastName</h2>
+                                                        </div>
+                                                        <div class="w-portfolio-item-hover"><i class="icon-plus"></i></div>
+                                                    </a>
+
+                                                    <div class="w-portfolio-item-details" style="display: none;">
+                                                        <div class="w-portfolio-item-details-h">
+                                                            <div class="w-portfolio-item-details-content">
+                                                                <div class="w-portfolio-item-details-content-preview">
+                                                                    <img src="@D.ProfileImageLink" alt="">
+                                                                </div>
+                                                                <div class="w-portfolio-item-details-content-text">
+                                                                    <h3>@D.FirstName @D.LastName</h3>
+                                                                    <p>@D.Bio</p>
+
+                                                                    <a class="g-btn type_primary size_small" href="@Url.Action("SearchSessions", "Doctor")"><span><i class="icon-search"></i>Find Session</span></a>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="w-portfolio-item-details-close"></div>
+                                                            <div class="w-portfolio-item-details-arrow to_prev"><i class="icon-angle-left"></i></div>
+                                                            <div class="w-portfolio-item-details-arrow to_next"><i class="icon-angle-right"></i></div>
+
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- page: FAQS -->
+        <section id="FAQs" class="l-section">
+
+
+
+            <div class="l-subsection">
+                <div class="l-subsection-h">
+                    <div class="l-subsection-hh g-html i-cf">
+
+                        <h2 class="highlight"><strong>FAQ'S</strong></h2>
+
+                        <div class="g-hr type_short">
+                            <span class="g-hr-h">
+                                <i class="icon-star"></i>
+                            </span>
+                        </div>
+                        <div class="w-tabs layout_accordion">
+                            <div class="w-tabs-h">
+                                <div class="w-tabs-section">
+                                    <div class="w-tabs-section-title">
+                                        <span class="w-tabs-section-title-icon"></span>
+                                        <span class="w-tabs-section-title-text">What is Nofoos?</span>
+                                        <span class="w-tabs-section-title-control"><i class="icon-angle-down"></i></span>
+                                    </div>
+                                    <div style="display: none;" class="w-tabs-section-content">
+                                        <div class="w-tabs-section-content-h">
+                                            <p>Nofoos offers you the same offline psychological help experience, or higher, without going into a clinic. Nofoos is here to help concerned people, close families and friends find solutions in a challenging time.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w-tabs-section">
+                                    <div class="w-tabs-section-title">
+                                        <span class="w-tabs-section-title-icon"></span>
+                                        <span class="w-tabs-section-title-text">What are our values? </span>
+                                        <span class="w-tabs-section-title-control"><i class="icon-angle-down"></i></span>
+                                    </div>
+                                    <div style="display: none;" class="w-tabs-section-content">
+                                        <div class="w-tabs-section-content-h">
+                                            <p>
+                                                <b>Professional code of conduct</b><br />
+                                                Our team consists only of certified psychologists either from The United Kingdom or the United States, we follow the ethical framework of the British Association of Counseling and Psychotherapy, and the British Psychological Society.
+                                                <br />
+                                                <b>Respect</b><br />
+                                                Respect is a core value that we abide by.  Respect toward oneself, to one-another and to our valued clients.
+                                                <br />
+                                                <b>Life is about choices</b><br />
+                                                We are here to offer you more choices in life to live better, excel and reach your full potential, or even completely reinvent yourself and your life. We is not here to judge, and we are not here to lead your life, ware here to listen, understand and offer help. 
+
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w-tabs-section">
+                                    <div class="w-tabs-section-title">
+                                        <span class="w-tabs-section-title-icon"></span>
+                                        <span class="w-tabs-section-title-text">What are your focus areas? </span>
+                                        <span class="w-tabs-section-title-control"><i class="icon-angle-down"></i></span>
+                                    </div>
+                                    <div style="display: none;" class="w-tabs-section-content">
+                                        <div class="w-tabs-section-content-h">
+                                            <p>In its first phase, We focus on:</p>
+                                            <ul>
+                                                <li>Child & adolescents' psychology</li>
+                                                <li>Relationships and couples counseling</li>
+                                                <li>Older adults and family support</li>
+                                                <li>Addiction and dependencies</li>
+                                                <li>Eating disorder</li>
+
+                                            </ul>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w-tabs-section">
+                                    <div class="w-tabs-section-title">
+                                        <span class="w-tabs-section-title-icon"></span>
+                                        <span class="w-tabs-section-title-text">Will you record the sessions?</span>
+                                        <span class="w-tabs-section-title-control"><i class="icon-angle-down"></i></span>
+                                    </div>
+                                    <div style="display: none;" class="w-tabs-section-content">
+                                        <div class="w-tabs-section-content-h">
+                                            <p>
+                                                Nofoos will not record any audio or video sessions. Our psychologists took an oath of secrecy, preserving the confidentiality of all clients and their family members. We will treat your information with the utmost secrecy and confidentiality abiding by the international standard of psychologist/patient code of conduct.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w-tabs-section">
+                                    <div class="w-tabs-section-title">
+                                        <span class="w-tabs-section-title-icon"></span>
+                                        <span class="w-tabs-section-title-text">Will you share the information provided with anyone ? </span>
+                                        <span class="w-tabs-section-title-control"><i class="icon-angle-down"></i></span>
+                                    </div>
+                                    <div style="display: none;" class="w-tabs-section-content">
+                                        <div class="w-tabs-section-content-h">
+                                            <p>No. Our psychologists took an oath of secrecy, preserving the confidentiality of all clients and their family members. Our psychologists will accept all information provided as correct and will treat it as strictly confidential and not to be shared with third parties under any circumstances. These strict conditions are to be leveled only in the unlikely incident of the infliction of harm on oneself or another.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w-tabs-section">
+                                    <div class="w-tabs-section-title">
+                                        <span class="w-tabs-section-title-icon"></span>
+                                        <span class="w-tabs-section-title-text">How will I pay for the service?</span>
+                                        <span class="w-tabs-section-title-control"><i class="icon-angle-down"></i></span>
+                                    </div>
+                                    <div style="display: none;" class="w-tabs-section-content">
+                                        <div class="w-tabs-section-content-h">
+                                            <p>
+                                                We offer multiple payment methods for your convenience and comfort. 
+                                                You can pay by credit card, paypal (coming soon). You can also pay in full discretion by using Bee card. You can also pay using any Mobinil or Vodafone or Etisalat cash transfer services.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w-tabs-section">
+                                    <div class="w-tabs-section-title">
+                                        <span class="w-tabs-section-title-icon"></span>
+                                        <span class="w-tabs-section-title-text">How should I know which psychologist to choose?</span>
+                                        <span class="w-tabs-section-title-control"><i class="icon-angle-down"></i></span>
+                                    </div>
+                                    <div style="display: none;" class="w-tabs-section-content">
+                                        <div class="w-tabs-section-content-h">
+                                            <p>Read the profile of each psychologist, with their area(s) of expertise, and then decide which one can serve your needs.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w-tabs-section">
+                                    <div class="w-tabs-section-title">
+                                        <span class="w-tabs-section-title-icon"></span>
+                                        <span class="w-tabs-section-title-text">Can I talk to a therapist now?</span>
+                                        <span class="w-tabs-section-title-control"><i class="icon-angle-down"></i></span>
+                                    </div>
+                                    <div style="display: none;" class="w-tabs-section-content">
+                                        <div class="w-tabs-section-content-h">
+                                            <p>All our therapists have their calendars available on our platform, please book the next available session with your therapist, pay for the session and we will notify you with an email reminder beforehand.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w-tabs-section">
+                                    <div class="w-tabs-section-title">
+                                        <span class="w-tabs-section-title-icon"></span>
+                                        <span class="w-tabs-section-title-text">Will you value my feedback?</span>
+                                        <span class="w-tabs-section-title-control"><i class="icon-angle-down"></i></span>
+                                    </div>
+                                    <div style="display: none;" class="w-tabs-section-content">
+                                        <div class="w-tabs-section-content-h">
+                                            <p>Yes. Your feedback, suggestions and complaints will be heard and valued. We are totally open to constructive criticism and view our clients as partners.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="l-subsection color_alternate">
+                <div class="l-subsection-h">
+                    <div class="l-subsection-hh g-html i-cf">
+
+                        <h4><strong>Are you ready to start a conversation?</strong></h4>
+
+                        <a class="g-btn type_primary" href="@Url.Action("SearchSessions", "Doctor")"><span>Find Session</span></a>
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="parallax_subsection_2" class="l-subsection color_dark with_parallax" style="background-image: url(/content/img/placeholder/parallax.png); display: none;">
+                <div class="l-subsection-h">
+                    <div class="l-subsection-hh g-html i-cf">
+
+                        <h3>The people who have <strong>trusted</strong> us so far</h3>
+
+                        <div class="w-clients type_carousel columns_5">
+                            <div class="w-clients-h">
+                                <div class="w-clients-list">
+                                    <div class="w-clients-list-h">
+                                        <a class="w-clients-item" href="javascript:void(0);">
+                                            <img src="~/content/img/clogo6.png" alt="Client logo" />
+                                        </a>
+                                        <a class="w-clients-item" href="javascript:void(0);">
+                                            <img src="~/content/img/clogo2.png" alt="Client logo" />
+                                        </a>
+                                        <a class="w-clients-item" href="javascript:void(0);">
+                                            <img src="~/content/img/clogo3.png" alt="Client logo" />
+                                        </a>
+                                        <a class="w-clients-item" href="javascript:void(0);">
+                                            <img src="~/content/img/clogo4.png" alt="Client logo" />
+                                        </a>
+                                        <a class="w-clients-item" href="javascript:void(0);">
+                                            <img src="~/content/img/clogo5.png" alt="Client logo" />
+                                        </a>
+                                        <a class="w-clients-item" href="javascript:void(0);">
+                                            <img src="~/content/img/clogo2.png" alt="Client logo" />
+                                        </a>
+                                        <a class="w-clients-item" href="javascript:void(0);">
+                                            <img src="~/content/img/clogo1.png" alt="Client logo" />
+                                        </a>
+                                        <a class="w-clients-item" href="javascript:void(0);">
+                                            <img src="~/content/img/clogo3.png" alt="Client logo" />
+                                        </a>
+                                    </div>
+                                </div>
+                                <a class="w-clients-nav to_prev disabled" href="javascript:void(0)" title="Show previous"></a>
+                                <a class="w-clients-nav to_next" href="javascript:void(0)" title="Show next"></a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- page: KB -->
+        <section id="KB" class="l-section">
+
+            <div class="l-subsection">
+                <div class="l-subsection-h">
+                    <div class="l-subsection-hh g-html i-cf">
+
+                        <h2>Our Knowledge Base</h2>
+
+                        <div class="g-hr type_invisible"></div>
+
+                        <div class="w-blog imgpos_atleft more_hidden">
+                            <div class="w-blog-h">
+                                <div class="w-blog-list">
+
+                                    @{
+                                        
+                                    
+                                        foreach (Blog B in ViewBag.blogs)
+                                        {
+                                            if (B.Type == 1)
+                                            {
+                                            
+                                        <div class="w-blog-entry">
+                                            <div class="w-blog-entry-h">
+                                                <a class="w-blog-entry-link"  id="@B.ID" href="javascript:ShowDetailsPage(@B.ID);">
+                                                    <div class="w-blog-entry-preview">
+                                                        <img alt="" src="@B.ImageURL" />
+                                                    </div>
+
+                                                    <h2 class="w-blog-entry-title">
+                                                        <span class="w-blog-entry-title-h">@B.Title</span>
+                                                    </h2>
+                                                </a>
+                                                <div class="w-blog-entry-body">
+
+
+                                                    <div class="w-blog-entry-short">
+                                                        <p>@B.Text</p>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                            
+                                            }
+
+                                            if (B.Type == 2)
+                                            {
+                                        
+                                        <div class="w-blog-entry">
+                                            <div class="w-blog-entry-h">
+                                                <a class="w-blog-entry-link" id="@B.ID" href="javascript:ShowDetailsPage(@B.ID);">
+                                                    <div class="w-blog-entry-preview">
+                                                        <iframe style="width:100%;height:100%;" src="@B.VideoURl" frameborder="0" allowfullscreen></iframe>
+                                                    </div>
+
+                                                    <h2 class="w-blog-entry-title">
+                                                        <span class="w-blog-entry-title-h">@B.Title</span>
+                                                    </h2>
+                                                </a>
+                                                <div class="w-blog-entry-body">
+                                                    @*<div class="w-blog-entry-meta">
+                                                    <div class="w-blog-entry-meta-date">
+                                                        <span class="w-blog-entry-meta-date-month">Mar</span>
+                                                        <span class="w-blog-entry-meta-date-day">23</span>
+                                                        <span class="w-blog-entry-meta-date-year">2013</span>
+                                                    </div>
+                                                </div>*@
+
+                                                    <div class="w-blog-entry-short">
+                                                        <p>@B.Text</p>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                            }
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="g-hr type_invisible"></div>
+
+                        <a class="g-btn type_default size_small" href="blog.html" style="display: none;"><span><i class="icon-chevron-right"></i>View all Posts</span></a>
+
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- page: CONTACT -->
+        <section id="contact" class="l-section">
+
+            <div class="l-subsection color_dark" style="background-image: url(/content/img/placeholder/parallax.png);">
+                <div class="l-subsection-h">
+                    <div class="l-subsection-hh g-html i-cf">
+
+                        <h2><strong>Contact Us</strong></h2>
+
+                        <div class="w-contacts">
+                            <div class="w-contacts-h">
+                                <div class="w-contacts-list">
+                                    <div class="w-contacts-item for_address">
+                                        <i class="icon-map-marker"></i>
+                                        <span class="w-contacts-item-name">Address:</span>
+                                        <span class="w-contacts-item-value">4 Al-Sabbagh Street, 11757, El Korba, Cairo, Egypt</span>
+                                    </div>
+                                    <br>
+                                    <div class="w-contacts-item for_phone">
+                                        <i class="icon-phone"></i>
+                                        <span class="w-contacts-item-name">Phone:</span>
+                                        <span class="w-contacts-item-value">002 02 24146493</span>
+                                    </div>
+                                    <div class="w-contacts-item for_email">
+                                        <i class="icon-envelope-alt"></i>
+                                        <span class="w-contacts-item-name">Email:</span>
+                                        <span class="w-contacts-item-value"><a href="mailto:info@Nofoos.com">info@Nofoos.com</a></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="l-subsection">
+                <div class="l-subsection-h">
+                    <div class="l-subsection-hh g-html i-cf">
+
+                        <h4 class="highlight"><strong>Send a Message</strong></h4>
+
+                        <a href="/Doctor/SubmitTherapistAccount">Join Our Team Now</a>
+
+                        <div class="w-form contacts_form">
+                            <div class="w-form-h contacts_form_form">
+                                <form class="g-form" method="post" id="contact_form">
+                                    <div class="g-form-row" id="name_row">
+                                        <div class="g-form-row-label">
+                                            <label class="g-form-row-label-h" for="name">Your Name</label>
+                                        </div>
+                                        <div class="g-form-row-field">
+                                            <i class="icon-user"></i>
+                                            <input type="text" name="name" id="name">
+                                        </div>
+                                        <div class="g-form-row-state" id="name_state"></div>
+                                    </div>
+                                    <div class="g-form-row" id="email_row">
+                                        <div class="g-form-row-label">
+                                            <label class="g-form-row-label-h" for="email">Email</label>
+                                        </div>
+                                        <div class="g-form-row-field">
+                                            <i class="icon-envelope"></i>
+                                            <input type="email" name="email" id="email">
+                                        </div>
+                                        <div class="g-form-row-state" id="email_state"></div>
+                                    </div>
+                                    <div class="g-form-row" id="phone_row">
+                                        <div class="g-form-row-label">
+                                            <label class="g-form-row-label-h" for="phone">Phone Number</label>
+                                        </div>
+                                        <div class="g-form-row-field">
+                                            <i class="icon-phone"></i>
+                                            <input type="text" name="phone" id="phone">
+                                        </div>
+                                        <div class="g-form-row-state" id="phone_state"></div>
+                                    </div>
+                                    <div class="g-form-row" id="message_row">
+                                        <div class="g-form-row-label">
+                                            <label class="g-form-row-label-h" for="message">Message</label>
+                                        </div>
+                                        <div class="g-form-row-field">
+                                            <i class="icon-pencil"></i>
+                                            <textarea name="message" id="message" cols="30" rows="10"></textarea>
+                                        </div>
+                                        <div class="g-form-row-state" id="message_state"></div>
+                                    </div>
+                                    <div class="g-form-row">
+                                        <div class="g-form-row-label"></div>
+                                        <div class="g-form-row-field">
+                                            <button type="submit" class="g-btn type_primary" id="message_send"><span><i class="icon-envelope-alt"></i>Send Message</span></button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+</div>
+<!-- /MAIN -->

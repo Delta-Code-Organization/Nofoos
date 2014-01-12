@@ -1,0 +1,70 @@
+﻿@{
+    ViewBag.Title = "شراء جلسة";
+    Layout = "~/Views/shared/MasterPage2Ar.cshtml";
+}
+
+@using GDAL;
+
+<script>
+    function Purchase(ID, Counter1) {
+        window.location.href = "/Doctor/Pay/" + ID;
+    }
+</script>
+
+<div class="l-main">
+    <div class="l-main-h">
+        <div class="l-subsection">
+            <div class="l-subsection-h">
+
+                <section id="home" class="l-section">
+                    <div class="l-subsection-hh g-html i-cf">
+                        @{
+                            if (ViewBag.MSG != null)
+                            {
+                            <div class="g-alert type_success with_close">
+
+                                <div class="g-alert-close">
+                                    ✕ 
+
+                                </div>
+                                <div class="g-alert-body" style="text-align:right;">
+                                    <p>
+                                        <strong style="direction:rtl;text-align:right" >
+                                            @ViewBag.MSG
+                                        </strong>
+
+                                    </p>
+                                </div>
+
+                            </div>
+                            }
+                        }
+                        <p class="subtitle">
+                            <span class="highlight" style="direction:rtl;"><strong>@ViewBag.Session.Therapist.FirstName @ViewBag.Session.Therapist.LastName</strong>.جلسة مع د</span><br />
+                            <strong style="direction:rtl;">التاريخ : @ViewBag.Session.Date.AddMinutes(-int.Parse(Session["TO"].ToString())).ToString("dd-MM-yyyy") الوقت : @ViewBag.Session.Date.AddMinutes(-int.Parse(Session["TO"].ToString())).TimeOfDay</strong><br />
+                            <strong style="">السعر : @ViewBag.Session.Price جم </strong>
+                        </p>
+                        <div class="g-hr">
+
+                            <span class="g-hr-h">
+                                <i class="icon-star"></i>
+                            </span>
+
+                        </div>
+                        <p class="size_big" style="font-family:'GE SS Two Light';">
+                           نقدم لك هذه الجلسة مجانا لمدة أسبوعين
+                        </p>
+
+                        <button class="g-btn type_primary size_big" onclick="Purchase(@ViewBag.Session.ID,0)">
+
+                            <span style="font-family:'GE SS Two Light';">إحجز الان</span>
+
+                        </button>
+                        <div style="width: 100%; height: 100px;"></div>
+
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>

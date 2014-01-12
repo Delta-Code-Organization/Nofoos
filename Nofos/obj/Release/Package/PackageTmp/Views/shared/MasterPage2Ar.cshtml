@@ -1,0 +1,324 @@
+﻿<!DOCTYPE html>
+
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title>@ViewBag.Title</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <link rel="stylesheet" type="text/css" media="all" href="http://fonts.googleapis.com/css?family=Dosis:400,700">
+    <link rel="stylesheet" type="text/css" media="all" href="http://fonts.googleapis.com/css?family=PT+Sans:400,700">
+
+    <link rel="stylesheet" type="text/css" media="all" href="~/content/css/motioncss.css">
+    <link rel="stylesheet" type="text/css" media="all" href="~/content/css/motioncss-widgets.css">
+    <link rel="shortcut icon" href="~/content/img/icon.ico">
+    <link rel="stylesheet" type="text/css" media="all" href="~/content/css/font-awesome.css">
+    <link rel="stylesheet" type="text/css" media="all" href="~/content/css/magnific-popup.css">
+    <link rel="stylesheet" type="text/css" media="all" href="~/content/css/jquery.jgrowl.css">
+    <link rel="stylesheet" type="text/css" media="all" href="~/content/css/style.css">
+    <link rel="stylesheet" type="text/css" media="all" href="~/content/css/responsive.css">
+
+    <script type="text/javascript" src="~/content/js/modernizr.js"></script>
+    <script type="text/javascript" src="~/content/js/jquery-1.8.3.js"></script>
+    <script type="text/javascript" src="~/content/js/jquery.easing.min.js"></script>
+    <script type="text/javascript" src="~/content/js/jquery.carousello.js"></script>
+    <script type="text/javascript" src="~/content/js/jquery.isotope.js"></script>
+    <script type="text/javascript" src="~/content/js/jquery.magnific-popup.js"></script>
+    <script type="text/javascript" src="~/content/js/jquery.jgrowl.js"></script>
+    <script type="text/javascript" src="~/content/js/jquery.parallax.js"></script>
+    <script type="text/javascript" src="~/content/js/jquery.queryloader2.js"></script>
+    <script type="text/javascript" src="~/content/js/waypoints.min.js"></script>
+    <script type="text/javascript" src="~/content/js/responsive.js"></script>
+    <script type="text/javascript" src="~/content/js/plugins.js"></script>
+    <script type="text/javascript" src="~/content/js/us.widgets.js"></script>
+    <script type="text/javascript" src="http://static.opentok.com/webrtc/v2.0/js/TB.min.js"></script>
+    <script src="~/content/js/jquery.validate.min.js"></script>
+<script>
+        function ChangeLang(ID) {
+            var data = { '_Lang': ID };
+            $.ajax({
+                url: '/Home/ChangeLang',
+                type: 'post',
+                data: data,
+                beforeSend: function () {
+
+
+
+                },
+                complete: function () {
+
+
+                },
+                success: function (data) {
+                    location.reload();
+                },
+                error: function (data) {
+                    console.log(data.responseText);
+                }
+            });
+
+        }
+
+    </script>
+</head>
+
+<body class="l-body headertype_sticky headerpos_top">
+
+    <div class='l-preloader'></div>
+    <!-- HEADER -->
+    <div class="l-header">
+        <div class="l-header-h">
+
+            <!-- subheader -->
+            <div class="l-subheader">
+                <div class="l-subheader-h i-cf">
+
+                    <!-- logo -->
+                    <div class="w-logo">
+                        <div class="w-logo-h">
+                            <a class="w-logo-link" href="/Home/Index#">
+                                <img class="w-logo-img" src="~/content/img/logo.png" alt="Nofoos">
+                                <span class="w-logo-title">
+                                    <span class="w-logo-title-h">Free You</span>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- nav -->
+                    <nav class="w-nav">
+                        <div class="w-nav-h">
+                            <div class="w-nav-control">
+                                <i class="icon-reorder"></i>
+                            </div>
+                            <div class="w-nav-list layout_hor width_auto level_1">
+                                <div class="w-nav-list-h">
+                                    @{
+                                        if (Session["user"] != null)
+                                        {
+                                        <div class="w-nav-item level_1">
+                                            <div class="w-nav-item-h">
+                                                <a href="@Url.Action("Logout","User")" class="w-nav-anchor level_1"><span class="w-nav-title" style="font-family:'GE SS Two Light';font-size:16px;line-height:10px;color:red;">خروج</span><span class="w-nav-hint"></span></a>
+                                            </div>
+                                        </div>
+                                        
+                                        }
+                                        else if (Session["Doctor"] != null)
+                                        {
+                                        <div class="w-nav-item level_1">
+                                            <div class="w-nav-item-h">
+                                                <a href="@Url.Action("Logout","Doctor")" class="w-nav-anchor level_1"><span class="w-nav-title" style="font-family:'GE SS Two Light';font-size:16px;line-height:10px;color:red;">خروج</span><span class="w-nav-hint"></span></a>
+                                            </div>
+                                        </div>
+                                        
+                                        }
+                                        else if(Session["Admin"] != null)
+                                        {
+                                            <div class="w-nav-item level_1">
+                                            <div class="w-nav-item-h">
+                                                <a href="@Url.Action("Logout", "Admin")" class="w-nav-anchor level_1"><span class="w-nav-title" style="font-family:'GE SS Two Light';font-size:16px;line-height:10px;color:red;">خروج</span><span class="w-nav-hint"></span></a>
+                                            </div>
+                                        </div>
+                                        }
+                                        else
+                                        {
+                                        }
+                                        
+                                    }
+
+                                    @{
+                                        if(Session["Admin"] != null){}
+                                        else{
+                                         <div class="w-nav-item level_1">
+                                        <div class="w-nav-item-h">
+                                            <a href="/Home/Index#contact" class="w-nav-anchor level_1"><span class="w-nav-title" style="font-family:'GE SS Two Light';font-size:16px;line-height:10px;">إتصل بنا</span><span class="w-nav-hint">Send us an email</span></a>
+                                        </div>
+                                    </div>
+                                    <div class="w-nav-item level_1">
+                                        <div class="w-nav-item-h">
+                                            <a href="/Home/Index#KB" class="w-nav-anchor level_1"><span class="w-nav-title" style="font-family:'GE SS Two Light';font-size:16px;line-height:10px;">مواضيع تعليمية</span><span class="w-nav-hint">List of eductional video about pyschology</span></a>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="w-nav-item level_1">
+                                        <div class="w-nav-item-h">
+                                            <a href="/Home/Index#FAQs" class="w-nav-anchor level_1"><span class="w-nav-title" style="font-family:'GE SS Two Light';font-size:16px;line-height:10px;">أسئلة شائعة</span><span class="w-nav-hint">Frequently asked questions</span></a>
+                                        </div>
+                                    </div>
+                                        }
+                                        }
+                                   
+
+                                    @{
+                                        if (Session["Doctor"] != null || Session["Admin"]!=null)
+                                        {
+                                        }
+                                        else
+                                        {
+                                        <div class="w-nav-item level_1">
+                                            <div class="w-nav-item-h">
+                                                <a href="@Url.Action("SearchSessions", "Doctor")" class="w-nav-anchor level_1"><span class="w-nav-title" style="font-family:'GE SS Two Light';font-size:16px;line-height:10px;">الجلسات القادمة</span><span class="w-nav-hint">Our Therapist calender to book a session</span></a>
+                                            </div>
+                                        </div>
+                                        }
+                                    }
+
+                                    @{
+                                        if(Session["Admin"] !=null){}
+                                        else{
+                                    <div class="w-nav-item level_1">
+                                        <div class="w-nav-item-h">
+                                            <a href="/Home/Index#OurPsychologist" class="w-nav-anchor level_1"><span class="w-nav-title"style="font-family:'GE SS Two Light';font-size:16px;line-height:10px;">المعالجين</span><span class="w-nav-hint">Our psychologist profile</span></a>
+                                        </div>
+                                    </div>
+                                    <div class="w-nav-item level_1">
+                                        <div class="w-nav-item-h">
+                                            <a href="/Home/Index#about" class="w-nav-anchor level_1"><span class="w-nav-title"style="font-family:'GE SS Two Light';font-size:16px;line-height:10px;">عن نفوس</span><span class="w-nav-hint">About Nofoos.com</span></a>
+                                        </div>
+                                    </div>
+                                    }
+                                    }
+                                    <div class="w-nav-item level_1 with_sublevel active">
+                                        <div class="w-nav-item-h">
+
+                                            @{
+                                                if (Session["user"] != null)
+                                                {
+                                                <a href="/User/UserDashboard" class="w-nav-anchor level_1"><span class="w-nav-title" style="font-family:'GE SS Two Light';font-size:16px;line-height:10px;">جلساتى</span><span class="w-nav-hint">Your booked sessions</span></a>
+                                        
+                                                }
+                                                else if (Session["Doctor"] != null)
+                                                {
+                                                <a href="/Doctor/DoctorDashboard" class="w-nav-anchor level_1"><span class="w-nav-title" style="font-family:'GE SS Two Light';font-size:16px;line-height:10px;">جلساتى</span><span class="w-nav-hint">Your pending sessions</span></a>
+                                        
+                                                }
+                                                else if (Session["Admin"] != null)
+                                                {
+                                                    <a href="/Admin/AdminDashboard" class="w-nav-anchor level_1"><span class="w-nav-title" style="font-family:'GE SS Two Light';font-size:16px;line-height:10px;">لوحة التحكم</span><span class="w-nav-hint"></span></a>
+                                                }
+                                                else
+                                                {
+                                                <a href="/Home/Index#home" class="w-nav-anchor level_1"><span class="w-nav-title" style="font-family:'GE SS Two Light';font-size:16px;line-height:10px;">الرئيسية</span><span class="w-nav-hint"></span></a>
+
+                                                }
+                                        
+                                            }
+
+
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- /HEADER -->
+
+    @RenderBody()
+
+    <!-- FOOTER -->
+    <div class="l-footer">
+        <div class="l-footer-h">
+
+            <!-- subfooter: top -->
+            @*<div class="l-subfooter at_top">
+                <div class="l-subfooter-h">
+
+                    <div class="g-cols">
+                        <div class="one-third">
+                            <div class="widget">
+
+                                <h5>Text Block</h5>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sed diam eget risus varius blandit sit amet non magna. Cras mattis consectetur purus sit amet fermentum.</p>
+                                <p>Maecenas sed diam eget risus varius blandit sit amet non magna. Cras mattis consectetur purus sit amet fermentum.</p>
+
+                            </div>
+                        </div>
+                        <div class="one-third">
+                            <div class="widget">
+
+                                <h5>Latest Posts</h5>
+                                <div class="w-bloglist date_atbottom">
+                                    <div class="w-bloglist-list">
+                                        <div class="w-bloglist-entry">
+                                            <a class="w-bloglist-entry-link" href="blog-post.html">Another Single Interesting Blog Post</a>
+                                            <span class="w-bloglist-entry-date">September 27, 2013</span>
+                                        </div>
+                                        <div class="w-bloglist-entry">
+                                            <a class="w-bloglist-entry-link" href="blog-post.html">This Blog Post Looks Beautiful even with Long Interesting Title</a>
+                                            <span class="w-bloglist-entry-date">April 08, 2013</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="one-third">
+                            <div class="widget">
+
+                                <h5>Contact Info</h5>
+                                <div class="w-contacts">
+                                    <div class="w-contacts-h">
+                                        <div class="w-contacts-list">
+                                            <div class="w-contacts-item for_address">
+                                                <i class="icon-map-marker"></i>
+                                                <span class="w-contacts-item-name">Address:</span>
+                                                <span class="w-contacts-item-value">1600 Amphitheatre Parkway, Mountain View, CA 94043, United States</span>
+                                            </div>
+                                            <div class="w-contacts-item for_phone">
+                                                <i class="icon-phone"></i>
+                                                <span class="w-contacts-item-name">Phone:</span>
+                                                <span class="w-contacts-item-value">+321 123 456 7</span>
+                                            </div>
+                                            <div class="w-contacts-item for_email">
+                                                <i class="icon-envelope-alt"></i>
+                                                <span class="w-contacts-item-name">Email:</span>
+                                                <span class="w-contacts-item-value"><a href="mailto:info@example.com">info@example.com</a></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>*@
+
+            <!-- subfooter: bottom -->
+            <div class="l-subfooter at_bottom">
+                <div class="l-subfooter-h i-cf">
+
+                    <div class="w-copyright">© 2013 Nofoos.com, All rights reserved</div>
+
+                    <div class="w-socials size_normal">
+                        <div class="w-socials-h">
+                            <div class="w-socials-list">
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- /FOOTER -->
+
+    <a class="w-toplink" href="#"><i class="icon-chevron-up"></i></a>
+   <a href="javascript:ChangeLang('En');" id="Ar" style="top:100px;right:1%;position:fixed;width:100px;height:40px;text-align:center;background-color:black;opacity:0.7;z-index:1000;line-height:40px;font-size:18px;border-radius:10px 10px 10px 10px;color:white;">English</a>
+
+
+</body>
+</html>

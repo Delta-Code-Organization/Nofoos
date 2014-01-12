@@ -1,0 +1,142 @@
+﻿@{
+    ViewBag.Title = "Admin Login - Nofoos.com";
+    Layout = "~/Views/shared/MasterPage2.cshtml";
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var options = {
+            weekday: "numeric", year: "numeric", month: "numeric",
+            day: "numeric", hour: "numeric", minute: "numeric"
+        };
+        var date = new Date();
+        var Day = date.getDate();
+        var mounth = date.getMonth() + 1;
+        var Year = date.getFullYear();
+        var Time = date.toLocaleTimeString("en-US");
+        var TimeLength = date.toLocaleTimeString("en-US").length;
+        var FullDate = mounth + '/' + Day + '/' + Year + " " + date.toLocaleTimeString("en-US");
+        if (Time.indexOf("GMT") != -1) {
+            FullDate = mounth + '/' + Day + '/' + Year + " " + date.toLocaleTimeString("en-US").substring(0, TimeLength - 5);
+        }
+        $.ajax({
+            url: '/User/SetTO',
+            type: 'post',
+            data: { "_LocalTime": FullDate }
+        });
+    });
+    $(document).ready(function () {
+        $('#ALogin').validate({
+
+            rules: {
+                LoginEmail: {
+                    required: true,
+                    minlength: 1
+                },
+
+                LoginPassword: {
+                    required: true,
+                    minlength: 5
+                }
+            },
+            messages: {
+                LoginEmail: {
+                    required: "please enter your Username",
+                    minlength: "5 characters as minimum "
+                },
+                LoginPassword: {
+                    required: "please enter your password",
+                    minlength: "5 characters as minimum "
+                }
+            },
+            submitHandler: function (form) { // for demo
+                $(function () {
+                    var LoginEmail = $('#LoginEmail').val();
+                    var LoginPassword = $('#LoginPassword').val();
+
+                    var data = { '_Username': LoginEmail, '_Password': LoginPassword };
+                    $.ajax({
+                        url: '/Admin/Login',
+                        type: 'post',
+                        data: data,
+                        beforeSend: function () {
+                            $('#DLoginSubmit').attr("disabled", "disabled");
+                        },
+                        complete: function () {
+                            $('#DLoginSubmit').removeAttr("disabled");
+                        },
+                        success: function (data) {
+                            if (data == 'false') {
+                                $("#AdminLoginError").fadeOut(0);
+                                $("#AdminLoginErrorText").html('<p><strong>Message</strong> :Username or Password is incorrect</p>');
+                                $("#AdminLoginError").fadeIn(500);
+                                scrollTo([0], [0]);
+
+                            }
+                            else {
+                                window.location.href = "/Admin/AdminDashboard";
+                            }
+                        },
+                        error: function (data) {
+                            console.log(data.responseText);
+                        }
+                    });
+                });
+            }
+        });
+    });
+</script>
+
+<div class="l-main">
+    <div class="l-main-h">
+        <div class="l-subsection">
+            <div class="l-subsection-h">
+
+                <section id="home" class="l-section">
+                    <div class="l-subsection-hh g-html i-cf">
+                        <h4 class="highlight"><strong>Admin Login</strong></h4>
+                        <div class="g-alert type_error with_close" id="AdminLoginError" style="display: none;">
+                                    <div class="g-alert-close">✕ </div>
+                                    <div class="g-alert-body" id="AdminLoginErrorText">
+                                    </div>
+                                </div>
+                                
+                        <div class="w-form contacts_form">
+                            <div class="w-form-h contacts_form_form">
+                                <form class="g-form" method="post" id="ALogin">
+                                    <div class="g-form-row" id="email_row">
+                                        <div class="g-form-row-label">
+                                            <label class="g-form-row-label-h" for="Email">Username</label>
+                                        </div>
+                                        <div class="g-form-row-field">
+                                            <i class="icon-envelope"></i>
+                                            <input type="text" name="LoginEmail" id="LoginEmail">
+                                        </div>
+                                        <div class="g-form-row-state" id="email_state"></div>
+                                    </div>
+                                    <div class="g-form-row" id="pass_row">
+                                        <div class="g-form-row-label">
+                                            <label class="g-form-row-label-h" for="password">Password</label>
+                                        </div>
+                                        <div class="g-form-row-field">
+                                            <i class="icon-lock"></i>
+                                            <input type="password" name="LoginPassword" id="LoginPassword">
+                                        </div>
+                                        <div class="g-form-row-state" id="pass_state"></div>
+                                    </div>
+                                    <div class="g-form-row">
+                                        <div class="g-form-row-label"></div>
+                                        <div class="g-form-row-field">
+                                            <button class="g-btn type_primary" id="SubmitAcc"><span>Login</span></button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+

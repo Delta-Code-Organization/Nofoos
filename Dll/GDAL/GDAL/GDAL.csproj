@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E7E55718-34BF-4C6C-BD77-9C4505D124DB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GDAL</RootNamespace>
+    <AssemblyName>GDAL</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AccountPermissions.cs" />
+    <Compile Include="Admin.cs" />
+    <Compile Include="Blog.cs" />
+    <Compile Include="Categories.cs" />
+    <Compile Include="Certificates.cs" />
+    <Compile Include="Country.cs" />
+    <Compile Include="DB.cs" />
+    <Compile Include="Doctors.cs" />
+    <Compile Include="Doctors_Admins.cs" />
+    <Compile Include="FTrans.cs" />
+    <Compile Include="Gender.cs" />
+    <Compile Include="Helper.cs" />
+    <Compile Include="PaymentMethods.cs" />
+    <Compile Include="SessionRates.cs" />
+    <Compile Include="Language.cs" />
+    <Compile Include="Lookups.cs" />
+    <Compile Include="OpenTok.cs" />
+    <Compile Include="PaymentStatus.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SecretQuestions.cs" />
+    <Compile Include="Sessions.cs" />
+    <Compile Include="Specialities.cs" />
+    <Compile Include="SpecialitiesAr.cs" />
+    <Compile Include="UserSessions.cs" />
+    <Compile Include="Status.cs" />
+    <Compile Include="SystemAccounts.cs" />
+    <Compile Include="SystemMessages.cs" />
+    <Compile Include="SystemUser.cs" />
+    <Compile Include="UserPayments.cs" />
+    <Compile Include="Users.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="bin\Debug\GDAL.dll" />
+    <Content Include="bin\Debug\GDAL.pdb" />
+    <Content Include="obj\Debug\GDAL.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\Debug\GDAL.dll" />
+    <Content Include="obj\Debug\GDAL.pdb" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin\Release\" />
+    <Folder Include="obj\Debug\TempPE\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

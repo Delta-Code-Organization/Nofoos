@@ -1,0 +1,152 @@
+﻿@{
+    ViewBag.Title = "Reset your password - Nofoos.com";
+    Layout = "~/Views/shared/MasterPage2.cshtml";
+}
+
+
+<script>
+    $(document).ready(function () {
+        var options = {
+            weekday: "numeric", year: "numeric", month: "numeric",
+            day: "numeric", hour: "numeric", minute: "numeric"
+        };
+        var date = new Date();
+        var Day = date.getDate();
+        var mounth = date.getMonth() + 1;
+        var Year = date.getFullYear();
+        var Time = date.toLocaleTimeString("en-US");
+        var TimeLength = date.toLocaleTimeString("en-US").length;
+        var FullDate = mounth + '/' + Day + '/' + Year + " " + date.toLocaleTimeString("en-US");
+        if (Time.indexOf("GMT") != -1) {
+            FullDate = mounth + '/' + Day + '/' + Year + " " + date.toLocaleTimeString("en-US").substring(0, TimeLength - 5);
+        }
+        $.ajax({
+            url: '/User/SetTO',
+            type: 'post',
+            data: { "_LocalTime": FullDate }
+        });
+    });
+    $(document).ready(function () {
+
+
+
+        $('#Login').validate({
+
+            rules: {
+                password: {
+                    required: true,
+                    minlength: 5
+                },
+                confirm: {
+                    equalTo: '#password'
+                }
+            },
+            messages: {
+                password: {
+                    required: "please enter your new password",
+                    minlength: "5 characters as minimum "
+                },
+                confirm: {
+                    equalTo: 'Your password and the confirmation does not match',
+                }
+            },
+            submitHandler: function (form) { // for demo
+                $(function () {
+                    var password = $('#password').val();
+                    var data = { 'ID': password };
+                    $.ajax({
+                        url: '/User/ResetPassword',
+                        type: 'post',
+                        data: data,
+                        beforeSend: function () {
+                            $("#LoginError").fadeOut(0);
+                            $("#LoginLoader").css({ "display": "block" });
+                            $('#LoginSubmit').attr("disabled", "disabled");
+                        },
+                        complete: function () {
+
+                            $("#LoginLoader").css({ "display": "none" });
+                            $('#LoginSubmit').removeAttr("disabled");
+                        },
+                        success: function (data) {
+                            $("#LoginerrorText").html('<p>Your password has been reset, you will be redircted to the dashboard now</p>');
+                            $("#LoginError").fadeIn(500);
+                            window.location.href = "/";
+                        },
+                        error: function (data) {
+                            console.log(data.responseText);
+                        }
+                    });
+                });
+            }
+        });
+
+
+
+
+
+
+
+    });
+
+
+</script>
+
+<div class="l-main">
+    <div class="l-main-h">
+        <div class="l-subsection">
+            <div class="l-subsection-h">
+
+                <section id="home" class="l-section">
+                    <div class="l-subsection-hh g-html i-cf">
+                        <h2 class="highlight"><strong>Reset your password</strong></h2>
+                        <div class="g-alert type_success with_close" id="LoginError" style="display: none;">
+                            <div class="g-alert-close">✕ </div>
+                            <div class="g-alert-body" id="LoginerrorText">
+                            </div>
+                        </div>
+                        <div class="w-form contacts_form">
+                            <div class="w-form-h contacts_form_form">
+                                <form class="g-form" action="#" method="post" id="Login">
+                                    <div class="g-form-row" id="password_row">
+                                        <div class="g-form-row-label">
+                                            <label class="g-form-row-label-h" for="name">Your new password</label>
+                                        </div>
+                                        <div class="g-form-row-field">
+                                            <i class="icon-password"></i>
+                                            <input type="password" name="password" id="password">
+                                        </div>
+                                        <div class="g-form-row-state" id="password_state"></div>
+                                    </div>
+                                    <div class="g-form-row" id="confirm_row">
+                                        <div class="g-form-row-label">
+                                            <label class="g-form-row-label-h" for="name">Re-enter your password</label>
+                                        </div>
+                                        <div class="g-form-row-field">
+                                            <i class="icon-password"></i>
+                                            <input type="password" name="confirm" id="confirm">
+                                        </div>
+                                        <div class="g-form-row-state" id="confirm_state"></div>
+                                    </div>
+                                    <div class="g-form-row">
+                                        <div class="g-form-row-label"></div>
+                                        <div class="g-form-row-field">
+                                            <button class="g-btn type_primary" id="LoginSubmit"><span>Reset</span></button>
+                                            <img id="LoginLoader" src="~/content/img/loader.gif" style="margin-left: 100px; display: none; margin-top: -40px;">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+
+                </section>
+
+            </div>
+        </div>
+
+    </div>
+</div>

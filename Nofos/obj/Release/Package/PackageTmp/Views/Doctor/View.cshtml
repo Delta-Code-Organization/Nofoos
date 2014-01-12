@@ -1,0 +1,58 @@
+﻿@{
+    ViewBag.Title = "Doctor Profile - Nofoos.com";
+    Layout = "~/Views/shared/MasterPage2.cshtml";
+}
+@using GDAL;
+<div class="l-main">
+    <div class="l-main-h">
+        <div class="l-subsection">
+            <div class="l-subsection-h">
+                <section id="home" class="l-section">
+                    <div class="l-subsection-hh g-html i-cf">
+                        <div class="g-cols" style="margin-bottom:50px;">
+                            <div class="one-third">
+                                @{
+                                    if (ViewBag.CurrentDoctor != null)
+                                    {
+                                
+                                       
+                                    @*<div class="w-gallery size_l">
+                                        <div class="w-gallery-h">
+                                            <div class="w-gallery-tnails">
+                                                <div class="w-gallery-tnails-h">*@
+
+                                                    <a class="w-gallery-tnail" href="#" title="@ViewBag.CurrentDoctor.FirstName @ViewBag.CurrentDoctor.LastName">
+                                                        <span class="w-gallery-tnail-h">
+                                                            <img class="w-gallery-tnail-img" src="@ViewBag.CurrentDoctor.ProfileImageLink" alt="@ViewBag.CurrentDoctor.FirstName @ViewBag.CurrentDoctor.LastName" />
+                                                            @*<span class="w-gallery-tnail-hover"><i class="icon-search"></i></span>*@
+                                                        </span>
+                                                    </a>
+                                                @*</div>
+                                            </div>
+                                        </div>
+                                    </div>*@
+                                    }
+                                }
+                            </div>
+                            <div class="two-thirds">
+
+                                <div class="w-portfolio-item-details-content-text" style="width: 80%;">
+                                    <h3>@ViewBag.CurrentDoctor.FirstName @ViewBag.CurrentDoctor.LastName</h3>
+                                    <p>
+                                       @ViewBag.CurrentDoctor.Bio
+                            
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

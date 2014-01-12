@@ -1,0 +1,113 @@
+﻿@{
+    ViewBag.Title = "لوحة تحكم المعالج";
+    Layout = "~/Views/shared/MasterPage2Ar.cshtml";
+}
+
+@using GDAL;
+<script>
+    function GoToUpdateProfile() {
+        window.location.href = "/Doctor/UpdateProfile";
+    }
+    $(document).ready(function () {
+        var options = {
+            weekday: "numeric", year: "numeric", month: "numeric",
+            day: "numeric", hour: "numeric", minute: "numeric"
+        };
+        var date = new Date();
+        var Day = date.getDate();
+        var mounth = date.getMonth() + 1;
+        var Year = date.getFullYear();
+        var Time = date.toLocaleTimeString("en-US");
+        var TimeLength = date.toLocaleTimeString("en-US").length;
+        var FullDate = mounth + '/' + Day + '/' + Year + " " + date.toLocaleTimeString("en-US");
+        if (Time.indexOf("GMT") != -1) {
+            FullDate = mounth + '/' + Day + '/' + Year + " " + date.toLocaleTimeString("en-US").substring(0, TimeLength - 5);
+        }
+        $.ajax({
+            url: '/User/SetTO',
+            type: 'post',
+            data: { "_LocalTime": FullDate }
+        });
+    });
+</script>
+<div class="l-main">
+    <div class="l-main-h">
+        <div class="l-subsection">
+            <div class="l-subsection-h">
+
+                <section id="home" class="l-section">
+                    <div class="l-subsection-hh g-html i-cf">
+                        <h2 class="highlight"><strong style="font-family:'GE SS Two Light';">@ViewBag.currentDoctor.FirstName @ViewBag.currentDoctor.LastName .مرحبا دكتور </strong></h2>
+                        <div class="g-hr">
+
+                            <span class="g-hr-h">
+                                <i class="icon-star"></i>
+                            </span>
+
+                        </div>
+                        <div class="g-cols">
+
+                            <div class="two-thirds">
+                                <h3 class="highlight"><strong style="font-family:'GE SS Two Light';">جلساتى المنتظرة</strong></h3>
+                                @{
+                                    if (ViewBag.DoctorSessions != null)
+                                    
+                                    {
+                                        for (int i = 0; i < ViewBag.DoctorSessions.Count; i++)
+                                        {
+                                    <div class="w-actionbox controls_aside color_primary" style="margin-top: -10px; margin-bottom: 20px;">
+                                        <div class="w-actionbox-h">
+                                            <div class="w-actionbox-text">
+                                                @if (ViewBag.DoctorSessions[i].Type == 1)
+                                                {
+                                                    <h5 style="text-align:right;">@ViewBag.DoctorSessions[i].Users[0].DisplayName</h5>
+                                                    
+                                                }
+                                                else
+                                                {
+                                                    <h5>ViewBag.DoctorSessions[i].Users.Count + " مستخدمين"</h5>
+                                                    
+                                                }
+                                                @if (ViewBag.DoctorSessions[i].Status == (int)Status.Started || ViewBag.DoctorSessions[i].Status == (int)Status.Online)
+                                                {
+                                                    <h6 style="color: darkcyan;text-align:right;font-family:'GE SS Two Light';direction:rtl;">@ViewBag.DoctorSessions[i].RemainingToStartAr</h6>
+                                                    <div class="w-actionbox-controls" style="float: left;">
+                                                        <a class="w-actionbox-button g-btn type_primary size_big" href="/Doctor/DoctorSession/@ViewBag.DoctorSessions[i].ID" target="_blank"><span style="font-family:'GE SS Two Light';">إستكمال الجلسة</span></a>
+                                                    </div>
+                                                }
+                                                else if (ViewBag.DoctorSessions[i].Status == (int)Status.Purchased)
+                                                {
+                                                    TimeSpan TotalDif = DateTime.UtcNow - @ViewBag.DoctorSessions[i].Date;
+                                                    <h6 style="text-align:right;font-family:'GE SS Two Light';direction:rtl;">@ViewBag.DoctorSessions[i].RemainingToStartAr</h6>
+                                                    if (Math.Abs(TotalDif.TotalMinutes) <= 10 || DateTime.UtcNow > ViewBag.DoctorSessions[i].Date)
+                                                    {
+                                                    <div class="w-actionbox-controls" style="float: left;">
+                                                        <a class="w-actionbox-button g-btn type_primary size_big" href="/Doctor/DoctorSession/@ViewBag.DoctorSessions[i].ID" target="_blank"><span style="font-family:'GE SS Two Light';">بدء الجلسة</span></a>
+                                                    </div>
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+                                        }
+                                    }
+                                }
+                            </div>
+
+                            <div class="one-third">
+
+                                <button class="g-btn type_secondary size_big" style="margin-top: 60px;" onclick="GoToUpdateProfile()"><span style="font-family:'GE SS Two Light';"><i class="icon-pencil"></i>تحديث الملف</span></button>
+                                <button class="g-btn type_secondary size_big" style="margin-top: 5px;" onclick="javascript:window.location.href ='/Doctor/DoctorHistory';"><span style="font-family:'GE SS Two Light';"><i class="icon-search"></i>عرض سجل الجلسات</span></button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </section>
+
+            </div>
+        </div>
+
+    </div>
+</div>

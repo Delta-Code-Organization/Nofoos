@@ -1,0 +1,68 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace GDAL
+{
+    public enum SystemMessages
+    {
+        Error = 000,
+        LoginSuccess = 001,
+        PasswordFail = 002,
+        UpdateSuccess = 003,
+        CertificateAlreadyExist = 004,
+        CertificateAddedSuccessfully = 005,
+        CertificateDeletedSuccessfully = 006,
+        SessionStarted = 007,
+        SessionEnded = 008,
+        SessionClosed = 009,
+        SessionError = 010,
+        SessionAlreadyOpenned = 045,
+        NewProfileCreated = 011,
+        ErrorCreatingProfile = 021,
+        AccountAlreadyDisabled = 031,
+        AccountAlreadyExist = 041,
+        SystemAlreadyEnded = 046,
+        Empty = 047,
+        PostedSuccessfully = 050,
+        AdminDisabledSuccessfully = 051,
+        CommentPosted = 052,
+        Liked = 053,
+        PostDeleted = 054,
+        YouDontHavePermissionToDeletePost = 055,
+        DoctorAvailabilityAddeddSuccessfully = 056,
+        DoctorAvailabilityDeletedSuccessfully = 057,
+        GroupRatedSuccessfully = 058,
+        ThereIsGroupWithTheSameName = 059,
+        GroupCreatedSuccessfully = 060,
+        OfferAlreadyExist = 061,
+        ThereIsAnOfferHaveTheSameNumberOfSession = 062,
+        OfferCreatedSuccessfully = 063,
+        OfferUpdatedSuccessfully = 064,
+        OfferDeletedSuccessfully = 065,
+        OfferPurchasedSuccessfully = 066,
+        CommentDelete = 067,
+        YouDontHavePermissionToDeleteComment = 068,
+        Unliked = 069,
+        PaymentCreatedSuccessfully = 070,
+        PaymentUsed = 071,
+        PaymentCancelled = 072,
+        PaymentRefunded = 073,
+        SessionRatedSuccessfully = 074,
+        AlreadyCancelled = 075,
+        CancelledSuccessfully = 076,
+        SessionAlreadyClosed = 077,
+        UsernameExist = 078,
+        DoctorDisabledSuccessfully = 079,
+        AdminNotFound = 080,
+        DoctorNotFound = 081,
+        GroupAlreadyCancelled = 082,
+        GroupCancelledSuccessfully = 083,
+        GroupNotFound = 084,
+        OfferClosedSuccessfully = 085,
+        CommentNotFound = 086 ,
+        LoginFailed= 087,
+        SessionReserved=088
+    }
+}

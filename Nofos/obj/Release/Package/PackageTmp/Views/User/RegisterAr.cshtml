@@ -1,0 +1,196 @@
+﻿@{
+    ViewBag.Title = "تسجيل مستخدم جديد";
+    Layout = "~/Views/shared/MasterPage2Ar.cshtml";
+}
+
+<script>
+    $(document).ready(function () {
+
+        $('#Register').validate({
+
+            rules: {
+                Email: {
+                    required: true,
+                    minlength: 5
+                },
+                DName: {
+                    required: true,
+                    minlength: 5
+                },
+                password: {
+                    required: true,
+                    minlength: 5
+                },
+                ConPass: {
+                    required: true,
+                    equalTo: '#password'
+                }
+            },
+            messages: {
+                Email: {
+                    required: "قم بإدخال بريدك الإلكترونى",
+                    minlength: "خمسة أحرف على الأقل "
+                },
+                DName: {
+                    required: "قم بإدخال الإسم المستعار",
+                    minlength: "خمسة أحرف على الأقل "
+                },
+                password: {
+                    required: "قم بإدخال كلمة السر",
+                    minlength: "خمسة أحرف على الأقل"
+                },
+                ConPass: {
+                    required: "قم بإعادة إدخال كلمة السر",
+                    equalTo: "كلمة السر غير متطابقة"
+                }
+            },
+            submitHandler: function (form) { // for demo
+                $(function () {
+                    var Email = $('#Email').val();
+                    var DName = $('#DName').val();
+                    var Password = $('#password').val();
+                    var ConfirmPassword = $('ConPass').val();
+                    var data = { '_Email': Email, '_DisplayName': DName, '_Password': Password };
+                    $.ajax({
+                        url: '/User/RegisterUser',
+                        type: 'post',
+                        data: data,
+                        beforeSend: function () {
+
+                            $("#RLoader").css({ "display": "block" });
+                            $('#RegisterSubmit').attr("disabled", "disabled");
+                        },
+                        complete: function () {
+
+                            $("#RLoader").css({ "display": "none" });
+                            $('#RegisterSubmit').removeAttr("disabled");
+                        },
+                        success: function (data) {
+                            if (data == 'false') {
+
+                                $("#RegisterSuccess").fadeOut(0);
+                                $("#RegisterError").fadeOut(0);
+                                $("#registererrorText").html('<p style="font-family:' + 'GE SS Two Light' + ';">هذا البريد الإلكترونى مستخدم بالفعل..من فضلك إختر بريد إلكترونى اخر</p>');
+                                $("#RegisterError").fadeIn(1000);
+                                scrollTo([0], [0]);
+
+
+                            }
+                           else if (data == 'true') {
+
+                                $("#RegisterSuccess").fadeOut(0);
+                                $("#RegisterError").fadeOut(0);
+                                $("#registerSuccessText").html('<p style="font-family:' + 'GE SS Two Light' + ';">تم التسجيل بنجاح</p>');
+                                $("#RegisterSuccess").fadeIn(1000);
+                                scrollTo([0], [0]);
+                                window.location.href = "/User/UserDashboard";
+                            }
+                            else
+                            {
+                                $("#RegisterSuccess").fadeOut(0);
+                                $("#RegisterError").fadeOut(0);
+                                $("#registerSuccessText").html('<p style="font-family:' + 'GE SS Two Light' + ';">تم التسجيل بنجاح</p>');
+                                $("#RegisterSuccess").fadeIn(1000);
+                                window.location.href = data;
+
+                            }
+                        },
+                        error: function (data) {
+                           console.log(data.responseText);
+                        }
+                    });
+                });
+            }
+        });
+
+    });
+</script>
+
+<div class="l-main">
+    <div class="l-main-h">
+        <div class="l-subsection">
+            <div class="l-subsection-h">
+
+                <section id="home" class="l-section">
+                    <div class="l-subsection-hh g-html i-cf">
+
+                        <a class="g-btn type_primary size_big" style="position:fixed;right:2px;bottom:5%;font-family:'GE SS Two Light';"  href="@Url.Action("SubmitTherapistAccount", "Doctor")">هل أنت معالج نفسى ؟,
+                            <br />
+                            إنضم لفريق نفوس الان</a>
+                        <h2 class="highlight"><strong style="font-family:'GE SS Two Light';">تسجيل مستخدم</strong></h2>
+                        <div class="g-alert type_error with_close" id="RegisterError" style="display: none;">
+                            <div class="g-alert-close">✕ </div>
+                            <div class="g-alert-body" id="registererrorText">
+                            </div>
+                        </div>
+                        <div class="g-alert type_success with_close" id="RegisterSuccess" style="display: none;">
+                            <div class="g-alert-close">✕ </div>
+                            <div class="g-alert-body" id="registerSuccessText">
+                            </div>
+                        </div>
+                        <div class="w-form contacts_form">
+                            <div class="w-form-h contacts_form_form">
+                                <form class="g-form" method="post" id="Register">
+                                    <div class="g-form-row" id="email_row">
+                                        <div class="g-form-row-label" style="font-family:'GE SS Two Light';text-align:right;">
+                                            <label class="g-form-row-label-h" for="Email">البريد الالكترونى</label>
+                                        </div>
+                                        <div class="g-form-row-field">
+                                            <i class="icon-envelope"></i>
+                                            <input type="email" name="Email" id="Email">
+                                        </div>
+                                        <div class="g-form-row-state" id="email_state"></div>
+                                    </div>
+                                    <div class="g-form-row" id="Fname_row">
+                                        <div class="g-form-row-label" style="font-family:'GE SS Two Light';text-align:right;">
+                                            <label class="g-form-row-label-h" for="Fname">الاسم المستعار</label>
+                                        </div>
+                                        <div class="g-form-row-field">
+                                            <i class="icon-user"></i>
+                                            <input type="text" name="DName" id="DName">
+                                        </div>
+                                        <div class="g-form-row-state" id="Fname_state"></div>
+                                    </div>
+
+                                    <div class="g-form-row" id="pass_row">
+                                        <div class="g-form-row-label" style="font-family:'GE SS Two Light';text-align:right;">
+                                            <label class="g-form-row-label-h" for="password">كلمة المرور</label>
+                                        </div>
+                                        <div class="g-form-row-field">
+                                            <i class="icon-lock"></i>
+                                            <input type="password" name="password" id="password">
+                                        </div>
+                                        <div class="g-form-row-state" id="pass_state"></div>
+                                    </div>
+                                    <div class="g-form-row" id="ConPass_row">
+                                        <div class="g-form-row-label" style="font-family:'GE SS Two Light';text-align:right;">
+                                            <label class="g-form-row-label-h" for="ConPass">تأكيد كلمة المرور</label>
+                                        </div>
+                                        <div class="g-form-row-field">
+                                            <i class="icon-lock"></i>
+                                            <input type="password" name="ConPass" id="ConPass" />
+                                        </div>
+                                        <div class="g-form-row-state" id="message_state"></div>
+                                    </div>
+                                    <div class="g-form-row">
+                                        <div class="g-form-row-label"></div>
+                                        <div class="g-form-row-field">
+                                            <button class="g-btn type_primary" id="RegisterSubmit"><span style="font-family:'GE SS Two Light';">تسجيل</span></button>
+                                            <img id="RLoader" src="~/content/img/loader.gif" style="margin-left: 100px; display: none; margin-top: -40px;">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+
+                </section>
+
+            </div>
+        </div>
+
+    </div>
+</div>

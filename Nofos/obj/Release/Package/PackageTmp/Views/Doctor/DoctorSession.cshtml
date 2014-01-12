@@ -1,0 +1,587 @@
+﻿@{
+    ViewBag.Title = "Doctor Session - Nofoos.com";
+    Layout = "~/Views/shared/MasterPage2.cshtml";
+}
+
+<script type="text/javascript">
+
+    var Timer;
+    var TimeInDouble;
+    var Hours;
+    var Minutes;
+    var AudioStatus = false;
+    var VideoStatus = false;
+
+
+
+    $(document).ready(function () {
+        var DocHeight = $(document).height();
+        $('#darkLayer').css({ 'height': DocHeight });
+
+
+        $('#EditSessions').validate({
+
+            rules: {
+                SDate: {
+                    required: true
+
+                },
+                STime: {
+                    required: true
+
+                },
+                SDuration: {
+                    required: true
+
+                },
+                SPrice: {
+                    required: true
+                }
+            },
+            messages: {
+                SDate: {
+                    required: "please enter Session Date"
+                },
+                STime: {
+                    required: "please enter Session Start Time"
+                },
+                SDuration: {
+                    required: "please enter Session Duration"
+
+                },
+                SPrice: {
+
+                    required: "please enter Session Price"
+                }
+            },
+            submitHandler: function (form) { // for demo
+                $(function () {
+                    var SDate = $('#SDate').val();
+                    var STime = $('#STime').val();
+                    var SSP = $('#SSP').find("option:selected").val();
+                    var SDuration = $("#SDuration").val();
+                    var SPrice = $("#SPrice").val();
+                    var SType = $("#SType").find("option:selected").val();
+
+
+
+                    var data = { '_SDate': SDate, '_STime': STime, '_Speciality': SSP, "_Duration": SDuration, "_Price": SPrice, "_Type": SType };
+                    $.ajax({
+                        url: '/Doctor/AddSession',
+                        type: 'post',
+                        data: data,
+                        beforeSend: function () {
+
+                            $('#AddSession').attr("disabled", "disabled");
+                        },
+                        complete: function () {
+
+                            $('#AddSession').removeAttr("disabled");
+                        },
+                        success: function (data) {
+
+                            window.location.href = "/Doctor/UpdateProfile";
+                        },
+                        error: function (data) {
+                            console.log(data.responseText);
+                        }
+                    });
+                });
+            }
+        });
+    });
+
+
+
+    var xtend = 0;
+    var Ex = false;
+
+    $(document).ready(function () {
+
+
+        function Timer(TextElement, Hours, Minutes, Seconds, OnFinished, AfterFive) {
+            this.TextElement = TextElement;
+            if (Seconds > 60) {
+                Seconds = 60;
+            }
+            if (Minutes > 59) {
+                Minutes = 59;
+            }
+            this.Hours = Hours;
+            var staticMinutes;
+            if (Hours > 0) {
+                staticMinutes = Hours*60;
+            }
+            else
+            {
+                staticMinutes = Minutes;
+            }
+            this.Minutes = Minutes;
+            this.Seconds = Seconds;
+            this.Start = function Start() {
+                var Second = this.Seconds;
+                var Hour = this.Hours;
+                var Minute = this.Minutes;
+                var NoZero = true;
+                var LoopCount = (Hour * 60 * 60) + (Minute * 60) + (Second) + (5 * 60);
+                if (Second < 10 && Minute < 10 && Hour < 10) {
+                    $(TextElement).text('0' + Hour + ':' + '0' + Minute + ':' + '0' + Second);
+                    NoZero = false;
+                }
+                else if (Minute < 10 && Hour < 10) {
+                    $(TextElement).text('0' + Hour + ':' + '0' + Minute + ':' + Second);
+                    NoZero = false;
+                }
+                else if (Second < 10 && Minute < 10) {
+                    $(TextElement).text(Hour + ':' + '0' + Minute + ':' + '0' + Second);
+                    NoZero = false;
+                }
+                else if (Second < 10 && Hour < 10) {
+                    $(TextElement).text('0' + Hour + ':' + Minute + ':' + '0' + Second);
+                    NoZero = false;
+                }
+                else if (Second < 10) {
+                    $(TextElement).text(Hour + ':' + Minute + ':' + '0' + Second);
+                    NoZero = false;
+                }
+                else if (Minute < 10) {
+                    $(TextElement).text(Hour + ':' + '0' + Minute + ':' + Second);
+                    NoZero = false;
+                }
+                else if (Hour < 10) {
+                    $(TextElement).text('0' + Hour + ':' + Minute + ':' + Second);
+                    NoZero = false;
+                }
+                if (NoZero == true) {
+                    $(TextElement).text(Hour + ':' + Minute + ':' + Second);
+                }
+                for (var i = 0; i <= LoopCount; i++) {
+                    $(TextElement).delay(1000).queue(function (next) {
+
+                        if (Ex == false) {
+                            Minute = Minute + xtend;
+                        }
+                        if (xtend == 5) {
+                            Ex = true;
+                        }
+
+                        if (Second < 0 || Minute < 0 || Hour < 0) {
+                            $(TextElement).text('00' + ':' + '00' + ':' + '00');
+                            AfterFive();
+                            OnFinished();
+                            return;
+                        }
+                        if (Minute == (staticMinutes - 6)) {
+                            
+                            staticMinutes = staticMinutes - 5;
+                            AfterFive();
+                        }
+                        if (Minute <= 5 && Hour <= 0) {
+                            $('#Timer').css({ 'color': 'Black', 'font-size': '25px', 'font-weight': 'bold' });
+                        }
+                        if (Ex != true) {
+                            if (Minute <= 0 && Hour <= 0) {
+                                $('#Xtend').css({ 'display': 'block', 'margin-top': '370px' });
+                                $('#Sch').css({ 'margin-top': '20px' });
+                            }
+
+                        }
+                        if (Second < 10 && Minute < 10 && Hour < 10) {
+                            $(TextElement).text('0' + Hour + ':' + '0' + Minute + ':' + '0' + Second);
+                            NoZero = false;
+                        }
+                        else if (Minute < 10 && Hour < 10) {
+                            $(TextElement).text('0' + Hour + ':' + '0' + Minute + ':' + Second);
+                            NoZero = false;
+                        }
+                        else if (Second < 10 && Minute < 10) {
+                            $(TextElement).text(Hour + ':' + '0' + Minute + ':' + '0' + Second);
+                            NoZero = false;
+                        }
+                        else if (Second < 10 && Hour < 10) {
+                            $(TextElement).text('0' + Hour + ':' + Minute + ':' + '0' + Second);
+                            NoZero = false;
+                        }
+                        else if (Second < 10) {
+                            $(TextElement).text(Hour + ':' + Minute + ':' + '0' + Second);
+                            NoZero = false;
+                        }
+                        else if (Minute < 10) {
+                            $(TextElement).text(Hour + ':' + '0' + Minute + ':' + Second);
+                            NoZero = false;
+                        }
+                        else if (Hour < 10) {
+                            $(TextElement).text('0' + Hour + ':' + Minute + ':' + Second);
+                            NoZero = false;
+                        }
+                        if (NoZero == true) {
+                            $(TextElement).text(Hour + ':' + Minute + ':' + Second);
+                        }
+                        Second--;
+                        if ((Minute == 0 && Second == 0) || (Minute == 0 && Second < 0) || (Minute < 0 && Second == 0) || (Minute < 0 && Second < 0)) {
+                            Hour--;
+                            Minute = 59;
+                            Second = 59;
+                        }
+                        if (Second == 0 || Second < 0) {
+                            Minute--;
+                            Second = 59;
+                        }
+                        next();
+                    });
+                }
+            };
+        }
+
+
+
+
+
+
+        $.ajax({
+            url: '/Doctor/GetDuration',
+            type: 'post',
+            data: {},
+            async: false,
+            success: function (data) {
+                TimeInDouble = data / 60;
+                Hours = Math.floor(TimeInDouble);
+                Minutes = data % 60;
+                Second = 00;
+                if (Second < 10 && Minutes < 10 && Hours < 10) {
+                    $('#Timer').text('0' + Hours + ':' + '0' + Minutes + ':' + '0' + Second);
+                    NoZero = false;
+                }
+                else if (Minutes < 10 && Hours < 10) {
+                    $('#Timer').text('0' + Hours + ':' + '0' + Minutes + ':' + Second);
+                    NoZero = false;
+                }
+                else if (Second < 10 && Minutes < 10) {
+                    $('#Timer').text(Hours + ':' + '0' + Minutes + ':' + '0' + Second);
+                    NoZero = false;
+                }
+                else if (Second < 10 && Hours < 10) {
+                    $('#Timer').text('0' + Hours + ':' + Minutes + ':' + '0' + Second);
+                    NoZero = false;
+                }
+                else if (Second < 10) {
+                    $('#Timer').text(Hours + ':' + Minutes + ':' + '0' + Second);
+                    NoZero = false;
+                }
+                else if (Minutes < 10) {
+                    $('#Timer').text(Hours + ':' + '0' + Minutes + ':' + Second);
+                    NoZero = false;
+                }
+                else if (Hours < 10) {
+                    $('#Timer').text('0' + Hours + ':' + Minutes + ':' + Second);
+                    NoZero = false;
+                }
+                else {
+                    //Do Nothing
+                }
+            },
+            error: function (data) {
+                console.log(data.responseText);
+            }
+        });
+
+        Timer = new Timer('#Timer', Hours, Minutes, 00, function () {
+            $.ajax({
+                url: '/Doctor/SessionFinished',
+                type: 'post',
+                data: {},
+                success: function (data) {
+                    window.location.href = "/";
+                },
+                error: function (data) {
+                    console.log(data.responseText);
+                }
+            });
+        }, function () {
+         
+            var Time = $('#Timer').text();
+            var data = { 'Time': Time };
+            $.ajax({
+                url: '/Doctor/UpdateElapsed',
+                type: 'post',
+                data: data,
+                success: function (data) {
+                 
+                },
+                error: function (data) {
+                    console.log(data.responseText);
+                }
+            });
+        });
+
+
+
+
+
+        var apiKey = "33122472";
+        var SessionID;
+        var Token;
+        var Nickname;
+        var publisherProperties = new Object();
+        var styleObj = new Object();
+        var thisSubscriber = new Object();
+        var publisher;
+        var subscribers = {};
+        var NumOfSub = 0;
+
+        $.ajax({
+            url: '/Doctor/GetSessionData',
+            type: 'post',
+            data: {},
+            success: function (data) {
+                SessionID = data.SessionID;
+                Token = data.Token;
+                CallStartSession();
+            },
+            error: function (error) {
+                console.log(error.responseText);
+            }
+        });
+
+        var session;
+        function CallStartSession() {
+
+            // Initialize session, set up event listeners, and connect
+            session = TB.initSession(SessionID);
+            session.addEventListener('sessionConnected', sessionConnectedHandler);
+            session.addEventListener("sessionDisconnected", sessionDisconnectedHandler);
+            session.addEventListener('streamCreated', streamCreatedHandler);
+            session.addEventListener("streamDestroyed", streamDestroyedHandler);
+            session.connect(apiKey, Token);
+        }
+
+
+        function sessionConnectedHandler(event) {
+            //alert(Nickname);
+            //        styleObj.nameDisplayMode = "on";
+            publisherProperties = { width: 200, height: 180, name: Nickname, style: styleObj, publishVideo: true };
+            publisher = TB.initPublisher(apiKey, 'PatientPublisher', publisherProperties);
+            session.publish(publisher);
+            // Subscribe to streams that were in the session when we connected
+            subscribeToStreams(event.streams);
+        }
+
+
+        function sessionDisconnectedHandler(event) {
+            if (event.reason == "forceDisconnected") {
+                $('#msg').css('display', 'block');
+            }
+            if (event.reason == "networkDisconnected") {
+                $('#msg').css('display', 'block');
+            }
+        }
+
+
+        function streamDestroyedHandler(event) {
+            for (var i = 0; i < event.streams.length; i++) {
+                session.unsubscribe(event.streams[i]);
+                NumOfSub--;
+
+            }
+        }
+
+
+        function streamCreatedHandler(event) {
+            // Subscribe to any new streams that are created
+            subscribeToStreams(event.streams);
+            NumOfSub++;
+
+        }
+
+
+        function subscribeToStreams(streams) {
+            for (var i = 0; i < streams.length; i++) {
+                // Make sure we don't subscribe to ourself
+                if (streams[i].connection.connectionId == session.connection.connectionId) {
+                    return;
+                }
+                // Subscribe to the stream
+                //var KickButton = document.getElementById('KickBtn');
+                //KickButton.setAttribute('id', streams[i].connection.connectionId);
+                $('#X').append('<div id="DoctorPublisher"></div>');
+                thisSubscriber = session.subscribe(streams[i], 'DoctorPublisher', { 'width': "100%", 'height': "100%", "top": "0px", "position": "absolute", "z-index": "3333" });
+
+                Timer.Start();
+
+                $.ajax({
+                    url: '/Doctor/SetAsStarted',
+                    type: 'post',
+                    data: {},
+                    success: function (data) {
+                    },
+                    error: function (data) {
+                        console.log(data.responseText);
+                    }
+                });
+
+            }
+        }
+
+
+        function forceDisconnectStream(ConID) {
+            session.forceDisconnect(ConID);
+        }
+
+
+
+        function forceUnpublishStream(stream) {
+            session.forceUnpublish(stream);
+        }
+
+
+
+        function KickUser_onclick(clickedID) {
+            forceDisconnectStream(clickedID);
+        }
+    });
+    function reload() {
+        location.reload();
+    }
+
+    function ExtendTime() {
+        xtend = 5;
+        $('#Xtend').css({ 'display': 'none' });
+        $('#Sch').css({ 'margin-top': '380px' });
+    }
+
+    function CloseSession() {
+        $.ajax({
+            url: '/Doctor/SessionFinished',
+            type: 'post',
+            data: {},
+            success: function (data) {
+                window.location.href = "/Doctor/DoctorDashboard";
+            },
+            error: function (data) {
+                console.log(data.responseText);
+            }
+        });
+    }
+
+    function EnableDisableVid_onclick() {
+        if (VideoStatus == true) {
+            publisher.publishVideo(true);
+            VideoStatus = false;
+            $('#CamIcon').attr('class', 'icon-pause');
+        }
+        else {
+            publisher.publishVideo(false);
+            VideoStatus = true;
+            $('#CamIcon').attr('class', 'icon-facetime-video');
+        }
+    }
+
+    function EnableDisableAud_onclick() {
+        if (AudioStatus == true) {
+            publisher.publishAudio(true);
+            AudioStatus = false;
+            $('#MicIcon').attr('class', 'icon-microphone-off');
+        }
+        else {
+            publisher.publishAudio(false);
+            AudioStatus = true;
+            $('#MicIcon').attr('class', 'icon-microphone');
+        }
+    }
+</script>
+
+<div class="l-main">
+    <div class="l-main-h">
+        <div class="l-subsection">
+            <div class="l-subsection-h">
+                <section id="home" class="l-section">
+                    <div class="l-subsection-hh g-html i-cf">
+                        <h1><span class="highlight">@ViewBag.S.Users[0].Username</span></h1>
+                        <div id="msg" class="g-alert type_error with_close" id="UPError" style="display: none;">
+                            <div class="g-alert-close">✕ </div>
+                            <div class="g-alert-body" id="UPerrorText">
+                                You have a bad internet connection , please <a href="javascript:reload()">Refresh</a> to join again
+                            </div>
+                        </div>
+
+
+
+                        <div style="width: 100%; height: 600px; background-color: #fff; position: relative; margin-bottom: 100px;">
+                            <div class="g-cols">
+
+                                <div class="three-quarters" style="position: relative;">
+                                    <div id="X" style="background-color: grey; margin-left: 0%; height: 500px; overflow: hidden;">
+                                    </div>
+
+                                    <div id="PatientPublisher" style="position: absolute; z-index: 9000; bottom: 0px; right: 0px; background-color: black; width: 200px; height: 180px;"></div>
+                                </div>
+                                <div class="one-quarter" style="text-align: center;">
+                                    <div id="Tools" style="width: 100px; height: 100%; background-color: #fff; float: left;">
+                                        <div class="w-iconbox iconpos_left with_circle" title="Enable/Disable Audio">
+                                            <div class="w-iconbox-h">
+                                                <a class="w-iconbox-link" href="javascript:EnableDisableAud_onclick();">
+                                                    <div class="w-iconbox-icon" style="margin-left: 25px; margin-top: 20px;">
+                                                        <i id="MicIcon" class="icon-microphone-off"></i>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="w-iconbox iconpos_left with_circle" title="Enable/Disable Video">
+                                            <div class="w-iconbox-h">
+                                                <a class="w-iconbox-link" href="javascript:EnableDisableVid_onclick();">
+                                                    <div class="w-iconbox-icon" style="margin-left: 25px; margin-top: 120px;">
+                                                        <i id="CamIcon" class="icon-pause"></i>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        @*<div class="w-iconbox iconpos_left with_circle">
+                                    <div class="w-iconbox-h">
+                                        <a id="KickBtn" class="w-iconbox-link" href="javascript:KickUser_onclick(this.id);">
+                                            <div class="w-iconbox-icon" style="margin-left: 25px; margin-top: 220px;">
+                                                <i class="icon-power-off"></i>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>*@
+                                        <div class="w-iconbox iconpos_left with_circle" title="Close">
+                                            <div class="w-iconbox-h">
+                                                <a id="CloseSession" class="w-iconbox-link" href="javascript:CloseSession();">
+                                                    <div class="w-iconbox-icon" style="margin-left: 25px; margin-top: 220px;">
+                                                        <i class="icon-power-off"></i>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="w-actionbox-controls" id="Xtend" style="margin-top: 370px; display: none; margin-left: 10px;">
+
+                                            <a class="w-actionbox-button g-btn type_primary size_small" href="javascript:ExtendTime();">
+                                                <span>Extend 5 Minutes</span>
+                                            </a>
+
+                                        </div>
+                                        <div class="w-actionbox-controls" id="Sch" style="margin-top: 380px; margin-left: 10px;">
+
+                                            <a class="w-actionbox-button g-btn type_primary size_small" target="_blank" href="@Url.Action("ScheduleSession", "Doctor")">
+                                                <span>Schedule</span>
+                                            </a>
+
+                                        </div>
+
+                                        @*<button class="g-btn type_primary size_small" style="margin-top: 420px; margin-left: 10px;" target="_blank" onclick="@Url.Action("ScheduleSession","Doctor")">
+                                    <span>schedule</span>
+                                </button>*@
+                                        <h5 id="Timer" style="margin-left: 20px; margin-top: 0px;"></h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

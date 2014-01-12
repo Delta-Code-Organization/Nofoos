@@ -1,0 +1,9 @@
+E:\Current\FaadFada\Faadfad\trunk\Code\Dll\GDAL\GDAL\bin\Release\GDAL.dll
+E:\Current\FaadFada\Faadfad\trunk\Code\Dll\GDAL\GDAL\bin\Release\GDAL.pdb
+E:\Current\FaadFada\Faadfad\trunk\Code\Dll\GDAL\GDAL\obj\Release\GDAL.dll
+E:\Current\FaadFada\Faadfad\trunk\Code\Dll\GDAL\GDAL\obj\Release\GDAL.pdb
+D:\Nofos\trunk\Dll\GDAL\GDAL\bin\Release\GDAL.dll
+D:\Nofos\trunk\Dll\GDAL\GDAL\bin\Release\GDAL.pdb
+D:\Nofos\trunk\Dll\GDAL\GDAL\obj\Release\GDAL.dll
+D:\Nofos\trunk\Dll\GDAL\GDAL\obj\Release\GDAL.pdb
+D:\Nofos\trunk\Dll\GDAL\GDAL\obj\Release\GDAL.csprojResolveAssemblyReference.cache

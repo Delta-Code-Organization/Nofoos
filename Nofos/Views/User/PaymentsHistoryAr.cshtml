@@ -1,0 +1,200 @@
+﻿@{
+    ViewBag.Title = "سجل دفع المستخدم";
+    Layout = "~/Views/shared/MasterPage2Ar.cshtml";
+}
+
+@using GDAL;
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        Filter();
+    });
+
+    function convertDate(inputFormat) {
+        var d = new Date(inputFormat);
+        return [d.getDate(), d.getMonth() + 1, d.getFullYear()].join('/');
+    }
+
+    function isEmpty(obj) {
+        for (var prop in obj) {
+            if (obj.hasOwnProperty(prop))
+                return false;
+        }
+
+        return true;
+    }
+
+    function Getmounthintext(inputFormat) {
+        var d = new Date(inputFormat);
+        var month = new Array();
+        month[0] = "يناير";
+        month[1] = "فبراير";
+        month[2] = "مارس";
+        month[3] = "أبريل";
+        month[4] = "مايو";
+        month[5] = "يونيو";
+        month[6] = "يوليو";
+        month[7] = "أغسطس";
+        month[8] = "سبتمبر";
+        month[9] = "أكتوبر";
+        month[10] = "نوفمبر";
+        month[11] = "ديسمبر";
+        var n = month[d.getMonth()];
+        return n;
+    }
+
+    function Filter() {
+        var data;
+        var FromDateText = $('#FromDate').val();
+        var ToDateText = $('#ToDate').val();
+        if (FromDate == "" || ToDate == "") {
+            FromDateText = "null";
+            ToDateText = "null";
+        }
+
+        data = { '_FromDate': FromDateText, '_ToDate': ToDateText };
+        $.ajax({
+            url: '/User/FilterFTrans',
+            type: 'post',
+            data: data,
+            beforeSend: function () {
+                $('#Loader').css({ 'display': 'block' });
+            },
+            complete: function () {
+                $('#Loader').css({ 'display': 'none' });
+            },
+            success: function (data) {
+                $('.w-blog-list').empty();
+                if (data == "NotLogged")
+                {
+                    window.location.href = "/User/Login";
+                }
+                if (isEmpty(data) == true) {
+                    $('.w-blog-list').append('<div class="g-alert type_info">'
+                    + '<div class="g-alert-body" style="text-align:center;width:100%;">'
+                        + '<p><strong>No Result Found</strong></br> Please search again, there are no results for your current search criteria.</p>'
+                    + '</div>'
+                + '</div>');
+                    return;
+                }
+                $.each(data, function (Index, FTrans) {
+
+                    //var textstatus;
+                    //switch(Custom.Status)
+                    //    {
+                    //    case 2:
+                    //        textstatus = "Started";
+                    //        break;
+                    //    case 3:
+                    //        textstatus = "Closed";
+                    //        break;
+                    //    case 4:
+                    //        textstatus = "Ended";
+                    //        break;
+                    //    case 5:
+                    //        textstatus = "Online";
+                    //        break;
+                    //    case 7:
+                    //        textstatus = "Canceled";
+                    //        break;
+                    //    case 8:
+                    //        textstatus = "Purchased";
+                    //        break;
+                    //    case 10:
+                    //        textstatus = "Pending";
+                    //        break;
+                    //    case 12:
+                    //        textstatus = "UnPaid";
+                    //}
+                    alert(FTrans.Date);
+                    var milli = FTrans.Date.replace(/\/Date\((-?\d+)\)\//, '$1');
+                    var FTransDate = new Date(parseInt(milli));
+                    var mounthOnly = Getmounthintext(FTransDate);
+                    var dayOnly = FTransDate.getDate();
+                    var yearOnly = FTransDate.getFullYear();
+                    $('.w-blog-list').append('<p style="text-align:right;font-size:20px;color:rgb(49, 197, 199);font-weight:bold;font-family:'+'GE SS Two Light'+';"><strong style="color:rgb(68, 68, 68);direction:rtl;"> رقم العملية  : </strong>' + FTrans.ID + '</br>'
+                                            + FTrans.Therapist.FirstName + ' ' + FTrans.Therapist.LastName  + '<strong style="color:rgb(68, 68, 68);">.د </strong><br/>'
+                                            + '<strong style="color:rgb(68, 68, 68);direction:rtl;">القيمة المدفوعة : </strong>' + FTrans.Amount + ' جم</br>'
+                                            + '<strong style="color:rgb(68, 68, 68);direction:rtl;">التاريخ : </strong>' + dayOnly + ' ' + mounthOnly + ' ' + yearOnly + '</br>'
+                                            + '<div class="g-hr"><span class="g-hr-h"><i class="icon-star"></i></span></div>'
+                                            +'</p>');
+                });
+            },
+            error: function (data) {
+               console.log(data.responseText);
+            }
+        });
+    }
+
+</script>
+
+<div class="l-main">
+    <div class="l-main-h">
+        <div class="l-subsection">
+            <div class="l-subsection-h">
+                <section id="SearchSessions" class="l-section">
+                    <div class="l-subsection-hh g-html i-cf">
+                        <h2 class="highlight"><strong style="font-family:'GE SS Two Light';">سجل التعاملات المالية</strong></h2>
+                        <div class="g-cols">
+                            
+                            <div class="two-thirds">
+                                <div class="l-subsection-hh g-html i-cf">
+                                    <div id="Loader" style="position:absolute; z-index:9999; width:100%; text-align:center; height:100%; background-color:#fff; opacity:.7; display:none;">
+                                        <img src="~/content/img/ajax_loader.gif" style="margin-top:100px; width:150px; float:right; margin-right:60%; height:150px;" />
+                                    </div>
+                                    <div class="w-blog imgpos_atleft more_hidden">
+                                        <div class="w-blog-h">
+                                            <div class="w-blog-list">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="one-third">
+                                <p class="subtitle"  style="font-family:'GE SS Two Light';">
+                                    بيانات البحث
+                                </p>
+                                <div class="w-form contacts_form">
+                                    <div class="w-form-h contacts_form_form">
+                                        <form id="SearchFilterForm" class="g-form">
+                                            <div id="FromDaterow" class="g-form-row">
+                                                <div class="g-form-row-label" style="font-family:'GE SS Two Light';text-align:right;">
+                                                    <label class="g-form-row-label-h" for="name">
+                                                    من تاريخ
+                                                    </label>
+                                                </div>
+                                                <div class="g-form-row-field">
+                                                    <input type="text" id="FromDate" name="FromDate" placeholder="DD/MM/YYYY" />
+                                                </div>
+                                            </div>
+                                            <div id="ToDaterow" class="g-form-row">
+                                                <div class="g-form-row-label" style="font-family:'GE SS Two Light';text-align:right;">
+                                                    <label class="g-form-row-label-h" for="name">
+                                                       إلى تاريخ
+                                                    </label>
+                                                </div>
+                                                <div class="g-form-row-field">
+                                                    <input type="text" id="ToDate" name="ToDate" placeholder="DD/MM/YYYY" />
+                                                </div>
+                                            </div>
+                                            
+                                            <div id="TypeRow22" class="g-form-row">
+                                                <div class="g-form-row-field">
+                                                    <button class="g-btn type_primary size_small" onclick="Filter();">
+                                                        <span style="font-family:'GE SS Two Light';"><i class="icon-search"></i>بحث</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
+

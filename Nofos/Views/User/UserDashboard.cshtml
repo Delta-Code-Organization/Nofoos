@@ -1,0 +1,132 @@
+﻿+@{
+    ViewBag.Title = "User Dashboard - Nofoos.com";
+    Layout = "~/Views/shared/MasterPage2.cshtml";
+}
+<script>
+    $(document).ready(function () {
+        var options = {
+            weekday: "numeric", year: "numeric", month: "numeric",
+            day: "numeric", hour: "numeric", minute: "numeric"
+        };
+        var date = new Date();
+        var Day = date.getDate();
+        var mounth = date.getMonth() + 1;
+        var Year = date.getFullYear();
+        var Time = date.toLocaleTimeString("en-US");
+        var TimeLength = date.toLocaleTimeString("en-US").length;
+        var FullDate = mounth + '/' + Day + '/' + Year + " " + date.toLocaleTimeString("en-US");
+        if (Time.indexOf("GMT") != -1) {
+            FullDate = mounth + '/' + Day + '/' + Year + " " + date.toLocaleTimeString("en-US").substring(0, TimeLength - 5);
+        }
+        $.ajax({
+            url: '/User/SetTO',
+            type: 'post',
+            data: { "_LocalTime": FullDate }
+        });
+    });
+
+    setInterval(function () {
+        $.ajax({
+            url: '/User/CheckUpdatedDashboardSessions',
+            type: 'post',
+            data: {},
+            success: function (data) {
+                if (data == 'OK') {
+                    location.reload();
+                }
+            },
+            error: function (data) {
+                console.log(data.responseText);
+            }
+        });
+    }, 60000);
+</script>
+@using GDAL;
+
+<div class="l-main">
+    <div class="l-main-h">
+        <div class="l-subsection">
+            <div class="l-subsection-h">
+
+                <section id="home" class="l-section">
+                    <div class="l-subsection-hh g-html i-cf">
+                        @{
+                            if (ViewBag.CurrentUser.Status == (int)Status.InvalidatedEmail){
+                        <div class="g-alert type_error with_close">
+
+                            <div class="g-alert-close">X</div>
+                            <div class="g-alert-body">
+                                <p>Message : You Haven't Validated your Email yet</p>
+                            </div>
+
+                        </div>
+                        }
+                        }
+                        <h2 class="highlight"><strong>Welcome @ViewBag.CurrentUser.DisplayName</strong></h2>
+                        <div class="g-hr">
+
+                            <span class="g-hr-h">
+                                <i class="icon-star"></i>
+                            </span>
+
+                        </div>
+                        <div class="g-cols">
+
+                            <div class="two-thirds">
+                                <h4 class="highlight"><strong>My pending Sessions</strong></h4>
+                                <h6>Sessions you booked will be listed here, a button says <strong style="color:green;">"Join Now"</strong><br />
+                                    will appear beside the session on its time.</h6>
+                                
+                                <br />
+                                @{
+                                    if (ViewBag.UserPendingSessions != null)
+                                    {
+                                        for (int i = 0; i < ViewBag.UserPendingSessions.Count; i++)
+                                        {
+                                    <div class="w-actionbox controls_aside color_primary" style="margin-top: -10px; margin-bottom: 20px;">
+                                        <div class="w-actionbox-h">
+                                            <div class="w-actionbox-text">
+                                                <h5>@ViewBag.UserPendingSessions[i].Therapist.FirstName @ViewBag.UserPendingSessions[i].Therapist.LastName</h5>
+                                                
+                                                @if (ViewBag.UserPendingSessions[i].Status == (int)Status.Started || ViewBag.UserPendingSessions[i].Status == (int)Status.Online)
+                                                {
+                                                    <h6 style="color: darkcyan;">@ViewBag.UserPendingSessions[i].RemainingToStart</h6>
+                                                    <div class="w-actionbox-controls" style="float: right;">
+                                                        <a class="w-actionbox-button g-btn type_primary size_big" href="/User/PatientSession/@ViewBag.UserPendingSessions[i].ID" target="_blank"><span>Join Session</span></a>
+                                                    </div>
+                                                }
+                                                @if (ViewBag.UserPendingSessions[i].Status == (int)Status.UnPaid)
+                                                {
+                                                    <h6 style="color: darkcyan;">@ViewBag.UserPendingSessions[i].RemainingToStart</h6>
+                                                    <div class="w-actionbox-controls" style="float: right;">
+                                                        <a class="w-actionbox-button g-btn type_primary size_big" href="/Doctor/PayAfter/@ViewBag.UserPendingSessions[i].ID"><span>Pay Now</span></a>
+                                                    </div>
+                                                }
+                                                else if (ViewBag.UserPendingSessions[i].Status == (int)Status.Purchased)
+                                                {
+                                                    TimeSpan TotalDif = DateTime.UtcNow - @ViewBag.UserPendingSessions[i].Date;
+                                                    <h6>@ViewBag.UserPendingSessions[i].RemainingToStart</h6>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                        }
+                                    }
+                                }
+                            </div>
+
+                            <div class="one-third">
+                                <button class="g-btn type_secondary size_big" style="margin-top: 60px;" onclick="javascript:window.location.href ='/User/UserHistory';"><span><i class="icon-search"></i>View Sessions History</span></button>
+                                <button class="g-btn type_secondary size_big" style="margin-top: 5px;" onclick="javascript:window.location.href ='/User/PaymentsHistory';"><span><i class="icon-search" ></i>Payments History</span></button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </section>
+
+            </div>
+        </div>
+
+    </div>
+</div>

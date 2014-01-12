@@ -1,0 +1,252 @@
+﻿@{
+    ViewBag.Title = "Group Session Doctor - Nofoos.com";
+    Layout = "~/Views/shared/MasterPage2.cshtml";
+}
+
+<script type="text/javascript">
+    function EndSession()
+    {
+        $.ajax({
+            url: '/Doctor/SessionFinished',
+            type: 'post',
+            data: {},
+            success: function (data) {
+                window.location.href = "/Doctor/DoctorDashboard";
+            },
+            error: function (data) {
+               console.log(data.responseText);
+            }
+        });
+    }
+
+
+    var Counter = 2;
+    var apiKey = "33122472";
+    var SessionID;
+    var Token;
+    var Nickname;
+    var publisherProperties = new Object();
+    var styleObj = new Object();
+    var thisSubscriber = new Object();
+    var publisher;
+    var subscribers = {};
+    var NumOfSub = 0;
+    var AudioStatus = false;
+    var VideoStatus = false;
+
+    $.ajax({
+        url: '/Doctor/GetGroupSessionData',
+        type: 'post',
+        data: {},
+        success: function (data) {
+            SessionID = data.SessionID;
+            Token = data.Token;
+            CallStartSession();
+        },
+        error: function (error) {
+           console.log(error.responseText);
+        }
+    });
+
+    var session;
+    function CallStartSession() {
+
+        // Initialize session, set up event listeners, and connect
+        session = TB.initSession(SessionID);
+        session.addEventListener('sessionConnected', sessionConnectedHandler);
+        session.addEventListener("sessionDisconnected", sessionDisconnectedHandler);
+        session.addEventListener('streamCreated', streamCreatedHandler);
+        session.addEventListener("streamDestroyed", streamDestroyedHandler);
+        session.connect(apiKey, Token);
+    }
+
+
+    function sessionConnectedHandler(event) {
+        //alert(Nickname);
+        //        styleObj.nameDisplayMode = "on";
+        publisherProperties = { width: 200, height: 180, name: Nickname, style: styleObj, publishVideo: true };
+        publisher = TB.initPublisher(apiKey, '1', publisherProperties);
+        session.publish(publisher);
+        // Subscribe to streams that were in the session when we connected
+        subscribeToStreams(event.streams);
+    }
+
+
+    function sessionDisconnectedHandler(event) {
+        if (event.reason == "forceDisconnected") {
+            alert("Try To Enter Session Again , You Have A low Internet Connection");
+        }
+        if (event.reason == "networkDisconnected") {
+            alert("Try To Enter Session Again , You Have A low Internet Connection ...");
+        }
+    }
+
+
+    function streamDestroyedHandler(event) {
+        for (var i = 0; i < event.streams.length; i++) {
+            session.unsubscribe(event.streams[i]);
+            var SubContainer = document.getElementById(event.streams[i].streamId);
+            document.body.removeChild(SubContainer);
+            NumOfSub--;
+            var Hidden = document.getElementById("NumOfSubscribers");
+            Hidden.setAttribute("Value", NumOfSub.toString());
+        }
+    }
+
+
+    function streamCreatedHandler(event) {
+        // Subscribe to any new streams that are created
+        subscribeToStreams(event.streams);
+        NumOfSub++;
+        var Hidden = document.getElementById("NumOfSubscribers");
+        Hidden.setAttribute("Value", NumOfSub.toString());
+    }
+
+
+    function subscribeToStreams(streams) {
+        for (var i = 0; i < streams.length; i++) {
+            // Make sure we don't subscribe to ourself
+            if (streams[i].connection.connectionId == session.connection.connectionId) {
+                return;
+            }
+            // Subscribe to the stream
+            var KickButton = document.getElementById('KickBtn');
+            KickButton.setAttribute('id', streams[i].connection.connectionId);
+            thisSubscriber = session.subscribe(streams[i], Counter, { 'width': "100%", 'height': "100%", "top": "0px", "position": "absolute", "z-index": "3333" });
+            //thisSubscriber.setStyle("nameDisplayMode", "on");
+            //            document.getElementById('Optionsdiv' + streams[i].streamId).innerHTML = "<input type='button' id='" + streams[i].connection.connectionId + "' value='Kick this User' onclick='return KickUser_onclick(this.id)'>";
+            //            thisSubscriber.setStyle("nameDisplayMode", "on");
+            //subscribers[stream[i].streamId] = thisSubscriber;
+            Counter++;
+        }
+    }
+
+
+    function forceDisconnectStream(ConID) {
+        session.forceDisconnect(ConID);
+    }
+
+
+
+    function forceUnpublishStream(stream) {
+        session.forceUnpublish(stream);
+    }
+
+
+
+    function KickUser_onclick(clickedID) {
+        forceDisconnectStream(clickedID);
+    }
+
+
+
+    function EnableDisableVid_onclick() {
+        if (VideoStatus == true) {
+            publisher.publishVideo(true);
+            VideoStatus = false;
+        }
+        else {
+            publisher.publishVideo(false);
+            VideoStatus = true;
+        }
+    }
+
+    function EnableDisableAud_onclick() {
+        if (AudioStatus == true) {
+            publisher.publishAudio(true);
+            AudioStatus = false;
+        }
+        else {
+            publisher.publishAudio(false);
+            AudioStatus = true;
+        }
+    }
+</script>
+<div class="l-main">
+    <div class="l-main-h">
+        <div class="l-subsection">
+            <div class="l-subsection-h">
+                <section id="home" class="l-section">
+                    <div class="l-subsection-hh g-html i-cf">
+                        <div class="g-cols">
+                            <div id="1" class="one-third">
+                            </div>
+                            <div class="one-third">
+                                <div id="2">
+                                </div>
+                            </div>
+                            <div class="one-third">
+                                <div id="3">
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                        <div class="g-cols">
+                            <div class="one-third">
+                                <div id="4">
+                                </div>
+                            </div>
+                            <div class="one-third">
+                                <div id="5">
+                                </div>
+                            </div>
+                            <div class="one-third">
+                                <div id="6">
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="g-cols" style="margin-bottom:200px;">
+                            
+							<div class="one-quarter">
+								<div class="w-iconbox iconpos_top with_circle">
+									<div class="w-iconbox-h">
+										<a class="w-iconbox-link" href="javascript:EnableDisableAud_onclick();">
+											<div class="w-iconbox-icon">
+												<i class="icon-microphone"></i>
+											</div>
+										</a>
+									</div>
+								</div>
+							</div>
+							<div class="one-quarter">
+								<div class="w-iconbox iconpos_top with_circle">
+									<div class="w-iconbox-h">
+										<a class="w-iconbox-link" href="javascript:EnableDisableVid_onclick();">
+											<div class="w-iconbox-icon">
+												<i class="icon-camera"></i>
+											</div>
+										</a>
+									</div>
+								</div>
+							</div>
+                            <div class="one-quarter">
+								<div class="w-iconbox iconpos_top with_circle">
+									<div class="w-iconbox-h">
+										<a class="w-iconbox-link" href="javascript:forceDisconnectStream(ConID);">
+											<div class="w-iconbox-icon">
+												<i class="icon-power-off"></i>
+											</div>
+										</a>
+									</div>
+								</div>
+							</div>
+                            <div class="one-quarter">
+								<div class="w-iconbox iconpos_top with_circle">
+									<div class="w-iconbox-h">
+										<a class="w-iconbox-link" href="javascript:EndSession();">
+											<div class="w-iconbox-icon">
+												<i class="icon-power-off"></i>
+											</div>
+										</a>
+									</div>
+								</div>
+							</div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>

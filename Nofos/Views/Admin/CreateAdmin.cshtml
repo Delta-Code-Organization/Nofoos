@@ -1,0 +1,144 @@
+﻿@{
+    ViewBag.Title = "Create Admin - Nofoos.com";
+    Layout = "~/Views/shared/MasterPage2.cshtml";
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#DRegister').validate({
+
+            rules: {
+                Email: {
+                    required: true,
+                    minlength: 5
+                },
+                password: {
+                    required: true,
+                    minlength: 5
+                },
+                ConPass: {
+                    required: true,
+                    minlength: 5,
+                    equalTo: '#password'
+                }
+            },
+            messages: {
+                Email: {
+                    required: "please enter username",
+                    minlength: "4 characters as minimum "
+                },
+                password: {
+                    required: "please enter your password",
+                    minlength: "5 characters as minimum "
+                },
+                ConPass: {
+                    required: "please Confirm your password",
+                    minlength: "5 characters as minimum ",
+                    equalTo: 'miss Match'
+                }
+            },
+            submitHandler: function (form) { // for demo
+                $(function () {
+                    var Email = $('#Email').val();
+                    var Password = $('#password').val();
+                    var data = { '_Username': Email, '_Password': Password };
+                    $.ajax({
+                        url: '/Admin/SubmitAccount',
+                        type: 'post',
+                        data: data,
+                        beforeSend: function () {
+                            $("#RegisterError").fadeOut(0);
+                            $("#RegisterSuccess").fadeOut(0);
+                            $('#SubmitAcc').attr("disabled", "disabled");
+                        },
+                        complete: function () {
+
+                            $('#SubmitAcc').removeAttr("disabled");
+                        },
+                        success: function (data) {
+                            if (data == 'false') {
+                                $("#registererrorText").html('<p><strong>Message</strong> : Username already exist</p>');
+                                $("#RegisterError").fadeIn(500);
+                            }
+                            else {
+                                $("#registerSuccessText").html('<p><strong>Message</strong> : Admin Created Successfully</p>');
+                                $("#RegisterSuccess").fadeIn(1000);
+                                scrollTo([0], [0]);
+                            }
+                        },
+                        error: function (data) {
+                           console.log(data.responseText);
+                        }
+                    });
+                });
+            }
+        });
+    });
+</script>
+
+<div class="l-main">
+    <div class="l-main-h">
+        <div class="l-subsection">
+            <div class="l-subsection-h">
+
+                <section id="home" class="l-section">
+                    <div class="l-subsection-hh g-html i-cf">
+                        <h4 class="highlight"><strong>Create New Admin</strong></h4>
+                        <div class="g-alert type_error with_close" id="RegisterError" style="display: none;">
+                                    <div class="g-alert-close">✕ </div>
+                                    <div class="g-alert-body" id="registererrorText">
+                                    </div>
+                                </div>
+                                <div class="g-alert type_success with_close" id="RegisterSuccess" style="display: none;">
+                                    <div class="g-alert-close">✕ </div>
+                                    <div class="g-alert-body" id="registerSuccessText">
+                                    </div>
+                                </div>
+                        <div class="w-form contacts_form">
+                            <div class="w-form-h contacts_form_form">
+                                <form class="g-form" method="post" id="DRegister">
+                                    <div class="g-form-row" id="email_row">
+                                        <div class="g-form-row-label">
+                                            <label class="g-form-row-label-h" for="Email">Username</label>
+                                        </div>
+                                        <div class="g-form-row-field">
+                                            <i class="icon-envelope"></i>
+                                            <input type="text" name="Email" id="Email">
+                                        </div>
+                                        <div class="g-form-row-state" id="email_state"></div>
+                                    </div>
+                                    <div class="g-form-row" id="pass_row">
+                                        <div class="g-form-row-label">
+                                            <label class="g-form-row-label-h" for="password">Password</label>
+                                        </div>
+                                        <div class="g-form-row-field">
+                                            <i class="icon-lock"></i>
+                                            <input type="password" name="password" id="password">
+                                        </div>
+                                        <div class="g-form-row-state" id="pass_state"></div>
+                                    </div>
+                                    <div class="g-form-row" id="ConPass_row">
+                                        <div class="g-form-row-label">
+                                            <label class="g-form-row-label-h" for="ConPass">Confirm Password</label>
+                                        </div>
+                                        <div class="g-form-row-field">
+                                            <i class="icon-lock"></i>
+                                            <input type="password" name="ConPass" id="ConPass" />
+                                        </div>
+                                        <div class="g-form-row-state" id="ConPass_state"></div>
+                                    </div>
+                                    <div class="g-form-row">
+                                        <div class="g-form-row-label"></div>
+                                        <div class="g-form-row-field">
+                                            <button class="g-btn type_primary" id="SubmitAcc"><span>Submit</span></button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>

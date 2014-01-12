@@ -1,0 +1,19 @@
+D:\Work\Faadfada\trunk\Code\Dll\GDAL\TestProject\bin\Debug\TestProject.exe.config
+D:\Work\Faadfada\trunk\Code\Dll\GDAL\TestProject\bin\Debug\TestProject.exe
+D:\Work\Faadfada\trunk\Code\Dll\GDAL\TestProject\bin\Debug\TestProject.pdb
+D:\Work\Faadfada\trunk\Code\Dll\GDAL\TestProject\bin\Debug\GDAL.dll
+D:\Work\Faadfada\trunk\Code\Dll\GDAL\TestProject\bin\Debug\GDAL.pdb
+D:\Work\Faadfada\trunk\Code\Dll\GDAL\TestProject\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\Work\Faadfada\trunk\Code\Dll\GDAL\TestProject\obj\x86\Debug\TestProject.exe
+D:\Work\Faadfada\trunk\Code\Dll\GDAL\TestProject\obj\x86\Debug\TestProject.pdb
+E:\faadfad\trunk\Code\Dll\GDAL\TestProject\bin\Debug\TestProject.exe.config
+E:\faadfad\trunk\Code\Dll\GDAL\TestProject\obj\x86\Debug\TestProject.exe
+E:\faadfad\trunk\Code\Dll\GDAL\TestProject\obj\x86\Debug\TestProject.pdb
+D:\work\Delta\Fadfada\trunk\Code\Dll\GDAL\TestProject\bin\Debug\TestProject.exe.config
+D:\work\Delta\Fadfada\trunk\Code\Dll\GDAL\TestProject\obj\x86\Debug\TestProject.exe
+D:\work\Delta\Fadfada\trunk\Code\Dll\GDAL\TestProject\obj\x86\Debug\TestProject.pdb
+D:\work\Delta\Fadfada\trunk\Code\Dll\GDAL\TestProject\obj\x86\Debug\TestProject.csprojResolveAssemblyReference.cache
+D:\Fadfada\trunk\Code\Dll\GDAL\TestProject\bin\Debug\TestProject.exe.config
+D:\Fadfada\trunk\Code\Dll\GDAL\TestProject\obj\x86\Debug\TestProject.exe
+D:\work\Delta\Abo Gazya\Fadfada\trunk\Code\Dll\GDAL\TestProject\bin\Debug\TestProject.exe.config
+D:\work\Delta\Abo Gazya\Fadfada\trunk\Code\Dll\GDAL\TestProject\obj\x86\Debug\TestProject.exe

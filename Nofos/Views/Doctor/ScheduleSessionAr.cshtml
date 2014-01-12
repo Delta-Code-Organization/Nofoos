@@ -1,0 +1,191 @@
+﻿@{
+    ViewBag.Title = "تحديد جلسة جديدة";
+    Layout = "~/Views/shared/MasterPage2Ar.cshtml";
+}
+
+
+<script type="text/ecmascript">
+    $(document).ready(function () {
+        
+        $('#EditSessions').validate({
+
+            rules: {
+                SDate: {
+                    required: true
+
+                },
+                STime: {
+                    required: true
+
+                },
+                SDuration: {
+                    required: true
+
+                },
+                SPrice: {
+                    required: true
+                }
+            },
+            messages: {
+                SDate: {
+                    required: "please enter Session Date"
+                },
+                STime: {
+                    required: "please enter Session Start Time"
+                },
+                SDuration: {
+                    required: "please enter Session Duration"
+
+                },
+                SPrice: {
+
+                    required: "please enter Session Price"
+                }
+            },
+            submitHandler: function (form) { // for demo
+                $(function () {
+                    var SDate = $('#SDate').val();
+                    var STime = $('#STime').val();
+                    var SSP = $('#SSP').find("option:selected").val();
+                    var SDuration = $("#SDuration").val();
+                    var SPrice = $("#SPrice").val();
+                    var SType = $("#SType").find("option:selected").val();
+
+
+
+                    var data = { '_SDate': SDate, '_STime': STime, '_Speciality': SSP, "_Duration": SDuration, "_Price": SPrice, "_Type": SType };
+                    $.ajax({
+                        url: '/Doctor/AddSessionExtended',
+                        type: 'post',
+                        data: data,
+                        beforeSend: function () {
+
+                            $('#AddSession').attr("disabled", "disabled");
+                        },
+                        complete: function () {
+
+                            $('#AddSession').removeAttr("disabled");
+                        },
+                        success: function (data) {
+                            window.close();
+                            //window.location.href = "/Doctor/UpdateProfile";
+                        },
+                        error: function (data) {
+                           console.log(data.responseText);
+                        }
+                    });
+                });
+            }
+        });
+   
+
+
+    })
+    </script>
+
+<div class="l-main">
+    <div class="l-main-h">
+        <div class="l-subsection">
+            <div class="l-subsection-h">
+
+                <section id="home" class="l-section">
+                    <div class="l-subsection-hh g-html i-cf">
+                        <h2 class="highlight"><strong >@ViewBag.SessionUser.DisplayName :تحديد جلسة جديدة مع  </strong></h2>
+                        <div class="w-form contacts_form">
+                            <div class="w-form-h contacts_form_form">
+                                <form class="g-form" method="post" id="EditSessions">
+                                    <div class="g-form-row" id="SDate_row">
+                                        <div class="g-form-row-label" style="text-align:right;font-family:'GE SS Two Light';">
+                                            <label class="g-form-row-label-h" for="SDate">تاريخ الجلسة</label>
+                                        </div>
+                                        <div class="g-form-row-field">
+
+                                            <input type="text" name="SDate" id="SDate" placeholder="MM/DD/YYY" />
+                                        </div>
+                                        <div class="g-form-row-state" id="SDate_state"></div>
+                                    </div>
+                                    <div class="g-form-row" id="STime_row">
+                                        <div class="g-form-row-label" style="text-align:right;font-family:'GE SS Two Light';">
+                                            <label class="g-form-row-label-h" for="STime">وقت الجلسة</label>
+                                        </div>
+                                        <div class="g-form-row-field">
+
+                                            <input type="text" name="STime" id="STime" placeholder="00:00">
+                                        </div>
+                                        <div class="g-form-row-state" id="STime_state"></div>
+                                    </div>
+                                    <div class="g-form-row" id="SSP_row">
+                                        <div class="g-form-row-label" style="text-align:right;font-family:'GE SS Two Light';">
+                                            <label class="g-form-row-label-h" for="SSP">تخصص الجلسة</label>
+                                        </div>
+                                        <div class="g-form-row-field">
+
+                                            <select name="SSP" id="SSP">
+                                                @{
+                                                    int value = 1;
+                                                    foreach (string sp in ViewBag.SPS)
+                                                    {
+                                                        if (@ViewBag.CurrentDoctor.SP1 == value || @ViewBag.CurrentDoctor.SP2 == value || @ViewBag.CurrentDoctor.SP3 == value)
+                                                        {
+                                                    <option value="@value">@sp.Replace("9", " ")</option>
+                                                        }
+
+                                                        value++;
+                                                    }
+                                                                        
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="g-form-row-state" id="SSP_state"></div>
+                                    </div>
+                                    <div class="g-form-row" id="SDuration_row">
+                                        <div class="g-form-row-label" style="text-align:right;font-family:'GE SS Two Light';">
+                                            <label class="g-form-row-label-h" for="SDuration">مدة الجلسة</label>
+                                        </div>
+                                        <div class="g-form-row-field">
+
+                                            <input type="text" name="SDuration" id="SDuration" placeholder="Duration in minutes">
+                                        </div>
+                                        <div class="g-form-row-state" id="SDuration_state"></div>
+                                    </div>
+                                    <div class="g-form-row" id="SPrice_row">
+                                        <div class="g-form-row-label" style="text-align:right;font-family:'GE SS Two Light';">
+                                            <label class="g-form-row-label-h" for="SPrice">سعر الجلسة</label>
+                                        </div>
+                                        <div class="g-form-row-field">
+
+                                            <input type="text" name="SPrice" id="SPrice" placeholder="Price in Dollars" />
+                                        </div>
+                                        <div class="g-form-row-state" id="SPrice_state"></div>
+                                    </div>
+                                    <div class="g-form-row" id="SType_row">
+                                        <div class="g-form-row-label" style="text-align:right;font-family:'GE SS Two Light';">
+                                            <label class="g-form-row-label-h" for="SType">نوع الجلسة</label>
+                                        </div>
+                                        <div class="g-form-row-field">
+
+                                            <select name="SType" id="SType">
+                                                <option value="1" selected="selected">فردى</option>
+                                                
+
+                                            </select>
+                                        </div>
+                                        <div class="g-form-row-state" id="SType_state"></div>
+                                    </div>
+
+                                    <div class="g-form-row">
+                                        <div class="g-form-row-label"></div>
+                                        <div class="g-form-row-field" style="text-align: center;">
+                                            <button class="g-btn type_primary" type="submit" id="AddSession"><span style="font-family:'GE SS Two Light';">إضافة الجلسة</span></button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>

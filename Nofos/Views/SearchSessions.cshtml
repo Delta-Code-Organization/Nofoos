@@ -1,0 +1,269 @@
+﻿@{
+    ViewBag.Title = "SearchSessions";
+    Layout = "~/Views/shared/MasterPage2.cshtml";
+}
+
+@using GDAL;
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        Filter();
+    });
+
+    function convertDate(inputFormat) {
+        var d = new Date(inputFormat);
+        return [d.getDate(), d.getMonth() + 1, d.getFullYear()].join('/');
+    }
+
+    function isEmpty(obj) {
+        for (var prop in obj) {
+            if (obj.hasOwnProperty(prop))
+                return false;
+        }
+
+        return true;
+    }
+
+    function Getmounthintext(inputFormat) {
+        var d = new Date(inputFormat);
+        var month = new Array();
+        month[0] = "Jan";
+        month[1] = "Feb";
+        month[2] = "Mar";
+        month[3] = "Apr";
+        month[4] = "May";
+        month[5] = "Jun";
+        month[6] = "Jul";
+        month[7] = "Aug";
+        month[8] = "Sep";
+        month[9] = "Oct";
+        month[10] = "Nov";
+        month[11] = "Dec";
+        var n = month[d.getMonth()];
+        return n;
+    }
+
+    function Filter() {
+        var data;
+        var DateText = $('#DateInput').val();
+        var DID = $('#DoctorInput').val();
+        var UID = $('#UserInput').val();
+        var SID = $('#StatusInput').val();
+        if (DateText == "") {
+            DateText = "null";
+        }
+        data = { 'Date': DateText, 'DoctorID': DID, 'UserID': UID, 'Status': SID };
+        $.ajax({
+            url: '/Admin/FilterSessions',
+            type: 'post',
+            data: data,
+            beforeSend: function () {
+                $('#Loader').css({ 'display': 'block' });
+            },
+            complete: function () {
+                $('#Loader').css({ 'display': 'none' });
+            },
+            success: function (data) {
+                $('.w-blog-list').empty();
+                if (isEmpty(data) == true) {
+                    $('.w-blog-list').append('<div class="g-alert type_info">'
+                    + '<div class="g-alert-body" style="text-align:center;width:100%;">'
+                        + '<p><strong>No Result Found</strong></br> Please search again, there are no results for your current search criteria.</p>'
+                    + '</div>'
+                + '</div>');
+                    return;
+                }
+                $.each(data, function (Index, Custom) {
+                    var milli = Custom.Date.replace(/\/Date\((-?\d+)\)\//, '$1');
+                    var SessionDate = new Date(parseInt(milli));
+                    var mounthOnly = Getmounthintext(SessionDate);
+                    var dayOnly = SessionDate.getDate();
+                    var yearOnly = SessionDate.getFullYear();
+                    $('.w-blog-list').append('<div class="w-blog-entry ' + Custom.ID + '">'
+                                                    + '<div class="w-blog-entry-h">'
+                                                        + '<a class="w-blog-entry-link" href="blog-post.html">'
+                                                            + '<div class="w-blog-entry-preview">'
+                                                                + '<img src="' + Custom.Doctors.ProfileImageLink + '" alt="">'
+                                                            + '</div>'
+                                                            + '<h2 class="w-blog-entry-title">'
+                                                                + '<span class="w-blog-entry-title-h" style="font-size: 15px;">Dr.' + Custom.Doctors.FirstName + ' ' + Custom.Doctors.LastName + ' With ' + Custom.Users.FirstName + ' ' + Custom.Users.LastName + '</span>'
+                                                            + '</h2>'
+                                                        + '</a>'
+                                                        + '<div class="w-blog-entry-body">'
+                                                            + '<div class="w-blog-entry-meta">'
+                                                                + '<div class="w-blog-entry-meta-date">'
+                                                                    + '<span class="w-blog-entry-meta-date-month">' + mounthOnly + '</span>'
+                                                                    + '<span class="w-blog-entry-meta-date-day">' + dayOnly + '</span>'
+                                                                    + '<span class="w-blog-entry-meta-date-year">' + yearOnly + '</span>'
+                                                                + '</div>'
+                                                            + '</div>'
+
+                                                            + '<div class="w-blog-entry-short">'
+                                                                + '<div class="g-cols">'
+
+                                                                    + '<div class="one-quarter">'
+                                                                        + '<p class="subtitle" style="font-size:14px;">Date</p>'
+                                                                        + '<div class="g-form-row-field">'
+                                                                            + '<input type="text" id="Date' + Custom.ID + '" name="date" placeholder="mm/dd/yyyy" style="font-size:9px;"/>'
+                                                                        + '</div>'
+                                                                    + '</div>'
+                                                                    + '<div class="one-quarter">'
+                                                                        + '<p class="subtitle" style="font-size:14px;">Time</p>'
+                                                                        + '<div class="g-form-row-field">'
+                                                                            + '<input type="text" id="From' + Custom.ID + '" name="date" placeholder="00:00" />'
+                                                                        + '</div>'
+                                                                    + '</div>'
+                                                                    + '<div class="one-quarter">'
+                                                                        + '<p class="subtitle" style="font-size:14px;">Duration</p>'
+                                                                        + '<div class="g-form-row-field">'
+                                                                            + '<input type="text" id="To' + Custom.ID + '" name="date" placeholder="Minutes" />'
+                                                                        + '</div>'
+                                                                    + '</div>'
+                                                                + '</div>'
+                                                                + '<button class="g-btn type_primary size_small" style="float:right;" onclick="Reschdual(' + Custom.ID + ');">'
+                                                                            + '<span>Reschedual</span>'
+                                                                        + '</button>'
+                                                            + '</div>'
+                                                        + '</div>'
+                                                    + '</div>'
+                                                + '</div>');
+                });
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+    }
+
+    function Reschdual(SessionID) {
+        var data;
+        var Date = $('#Date' + SessionID).val();
+        var Time = $('#From' + SessionID).val();
+        var Duration = $('#To' + SessionID).val();
+        data = { 'SessionID': SessionID, 'Date': Date, 'Time': Time, 'Duration': Duration };
+        $.ajax({
+            url: '/Admin/Reschedual',
+            type: 'post',
+            data: data,
+            beforeSend: function () {
+                //$('#Loader').css({ 'display': 'block' });
+            },
+            complete: function () {
+                //$('#Loader').css({ 'display': 'none' });
+            },
+            success: function (data) {
+                $('.w-blog-entry.' + SessionID).fadeOut(1000);
+            },
+            error: function (data) {
+                alert(data.responseText);
+            }
+        });
+    }
+</script>
+
+<div class="l-main">
+    <div class="l-main-h">
+        <div class="l-subsection">
+            <div class="l-subsection-h">
+                <section id="SearchSessions" class="l-section">
+                    <div class="l-subsection-hh g-html i-cf">
+                        <div class="g-cols">
+                            <div class="one-third">
+                                <p class="subtitle">
+                                    Search Filter
+                                </p>
+                                <div class="w-form contacts_form">
+                                    <div class="w-form-h contacts_form_form">
+                                        <form id="SearchFilterForm" class="g-form">
+                                            <div id="TherapistRow" class="g-form-row">
+                                                <div class="g-form-row-label">
+                                                    <label class="g-form-row-label-h" for="name">
+                                                        Date
+                                                    </label>
+                                                </div>
+                                                <div class="g-form-row-field">
+                                                    <input type="text" id="DateInput" name="date" placeholder="mm/dd/yyyy" />
+                                                </div>
+                                            </div>
+                                            <div id="SpecialityRow" class="g-form-row">
+                                                <div class="g-form-row-label">
+                                                    <label class="g-form-row-label-h" for="name">
+                                                        Doctor
+                                                    </label>
+                                                </div>
+                                                <div class="g-form-row-field">
+                                                    <select id="DoctorInput">
+                                                        <option value="0"></option>
+                                                        @{
+                                                            foreach (Doctors D in ViewBag.Doctors)
+                                                            {
+                                                            <option value="@D.ID">@D.FirstName @D.LastName</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div id="TypeRow1" class="g-form-row">
+                                                <div class="g-form-row-label">
+                                                    <label class="g-form-row-label-h" for="name">
+                                                        User
+                                                    </label>
+                                                </div>
+                                                <div class="g-form-row-field">
+                                                    <select id="UserInput">
+                                                        <option value="0"></option>
+                                                        @{
+                                                            foreach (Users U in ViewBag.Users)
+                                                            {
+                                                            <option value="@U.ID">@U.Username</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div id="TypeRow" class="g-form-row">
+                                                <div class="g-form-row-label">
+                                                    <label class="g-form-row-label-h" for="name">
+                                                        Status
+                                                    </label>
+                                                </div>
+                                                <div class="g-form-row-field">
+                                                    <select id="StatusInput">
+                                                        <option value="2500"></option>
+                                                        <option value="10">Pending</option>
+                                                        <option value="2">Started</option>
+                                                        <option value="4">Ended</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div id="TypeRow22" class="g-form-row">
+                                                <div class="g-form-row-field">
+                                                    <button class="g-btn type_primary size_small" onclick="Filter();">
+                                                        <span><i class="icon-search"></i>Search</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="two-thirds">
+                                <div class="l-subsection-hh g-html i-cf">
+                                    <div id="Loader" style="position:absolute; z-index:9999; width:100%; text-align:center; height:100%; background-color:#fff; opacity:.7; display:none;">
+                                        <img src="~/content/img/ajax_loader.gif" style="margin-top:100px; width:150px; float:right; margin-right:60%; height:150px;" />
+                                    </div>
+                                    <div class="w-blog imgpos_atleft more_hidden">
+                                        <div class="w-blog-h">
+                                            <div class="w-blog-list">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>

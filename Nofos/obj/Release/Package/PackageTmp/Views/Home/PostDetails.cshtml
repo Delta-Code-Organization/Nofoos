@@ -1,0 +1,49 @@
+﻿@{
+    ViewBag.Title = "PostDetails";
+    Layout = "~/Views/shared/MasterPage2.cshtml";
+}
+
+<div class="l-main">
+    <div class="l-main-h">
+        <div class="l-subsection">
+            <div class="l-subsection-h">
+                <section id="home" class="l-section">
+                    <div class="l-subsection-hh g-html i-cf">
+                        <h1>
+                            <span class="highlight">@ViewBag.CurrentBlog.Title</span>
+                        </h1>
+                        <div class="g-cols" style="margin-bottom: 50px;">
+                            @{
+                                <div class="one-half">
+
+                                    @if (ViewBag.CurrentBlog.Type == 1)
+                                    {
+                                        <div class="w-blogpost-text i-cf">
+                                                <img class="w-gallery-tnail-img" alt="@ViewBag.CurrentBlog.Title" src="@ViewBag.CurrentBlog.ImageURL"></img>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <iframe style="width:100%;height:450px;" src="@ViewBag.CurrentBlog.VideoURl" frameborder="0" allowfullscreen></iframe>
+                                    }
+                                </div>
+
+                                <div class="one-half">
+
+                                    <h3 style="word-wrap: break-word;">
+                                        @ViewBag.CurrentBlog.Text
+                                    </h3>
+                                </div>
+                            }
+                        </div>
+                        </div>
+                </section>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+

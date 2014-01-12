@@ -1,0 +1,247 @@
+﻿@{
+    ViewBag.Title = "تسجيل معالج جديد";
+    Layout = "~/Views/shared/MasterPage2Ar.cshtml";
+}
+
+
+<script>
+    $(document).ready(function () {
+
+        $('#DRegister').validate({
+
+            rules: {
+                Email: {
+                    required: true,
+                    minlength: 5
+                },
+                Fname: {
+                    required: true,
+                    minlength: 2
+                },
+                Lname: {
+                    required: true,
+                    minlength: 2
+                },
+                password: {
+                    required: true,
+                    minlength: 5
+                },
+                ConPass: {
+                    required: true,
+                    equalTo: '#password'
+                },
+                Phone: {
+                    required: true
+                }
+            },
+            messages: {
+                Email: {
+                    required: "قم بإدخال بريدك الإلكترونى",
+                    minlength: "خمسة أحرف على الأقل "
+                },
+                Fname: {
+                    required: "قم بإدخال الإسم الأول",
+                    minlength: "خمسة أحرف على الأقل"
+                },
+                Lname: {
+                    required: "قم بإدخال الإسم الأخير",
+                    minlength: "خمسة أحرف على الأقل"
+                },
+                password: {
+                    required: "قم بإدخال كلمة السر",
+                    minlength: "خمسة أحرف على الأقل "
+                },
+                ConPass: {
+                    required: "قم بإعادة إدخال كلمة السر",
+                    equalTo: "كلمة السر غير متطابقة"
+                },
+                Phone: {
+                    required: "قم بإدخال رقم الهاتف"
+                }
+            },
+            submitHandler: function (form) { // for demo
+                $(function () {
+                    var Email = $('#Email').val();
+                    var FirstName = $('#Fname').val();
+                    var LastName = $('#Lname').val();
+                    var Password = $('#password').val();
+                    var phone = $('#Phone').val();
+                    var bio = $('#Bio').val();
+                    var bioAr = $('#BioAr').val();
+                    var ConfirmPassword = $('ConPass').val();
+                    var data = { '_Email': Email,'_Bio': bio, '_BioAr': bioAr, '_FirstName': FirstName, '_LastName': LastName, '_Password': Password, "_Phone": phone };
+                    $.ajax({
+                        url: '/Doctor/SubmitAccount',
+                        type: 'post',
+                        data: data,
+                        beforeSend: function () {
+
+                            $("#RegisterSuccess").fadeOut(0);
+                            $("#RegisterError").fadeOut(0);
+                            $("#DRLoader").css({ "display": "block" });
+                            $('#SubmitAcc').attr("disabled", "disabled");
+                        },
+                        complete: function () {
+                            $("#DRLoader").css({ "display": "none" });
+                            $('#SubmitAcc').removeAttr("disabled");
+                        },
+                        success: function (data) {
+                            if (data == 'false') {
+
+                                $("#registererrorText").html('<p style="font-family:' + 'GE SS Two Light' + ';">هذا البريد الإلكترونى مستخدم بالفعل..من فضلك إختر بريد إلكترونى اخر</p>');
+                                $("#RegisterError").fadeIn(500);
+                                scrollTo([0], [0]);
+                            }
+                            else {
+
+                                $("#registerSuccessText").html('<p style="font-family:'+'GE SS Two Light'+';">لقد تم إرسال طلب حسابك وسوف يتم مراجعة الحساب و الرد قريبا</p>');
+                                $("#RegisterSuccess").fadeIn(1000);
+                                scrollTo([0], [0]);
+                            }
+                        },
+                        error: function (data) {
+                            console.log(data.responseText);
+                        }
+                    });
+                });
+            }
+        });
+
+
+
+
+
+
+
+
+
+    });
+
+
+</script>
+
+<div class="l-main">
+    <div class="l-main-h">
+        <div class="l-subsection">
+            <div class="l-subsection-h">
+
+                <section id="home" class="l-section">
+                    <div class="l-subsection-hh g-html i-cf">
+
+                        <h2 class="highlight"><strong style="font-family:'GE SS Two Light';">تسجيل معالج جديد</strong></h2>
+                        <div class="g-alert type_error with_close" id="RegisterError" style="display: none;">
+                            <div class="g-alert-close">✕ </div>
+                            <div class="g-alert-body" id="registererrorText">
+                            </div>
+                        </div>
+                        <div class="g-alert type_success with_close" id="RegisterSuccess" style="display: none;">
+                            <div class="g-alert-close">✕ </div>
+                            <div class="g-alert-body" id="registerSuccessText">
+                            </div>
+                        </div>
+                        <div class="w-form contacts_form">
+                            <div class="w-form-h contacts_form_form">
+                                <form class="g-form" method="post" id="DRegister">
+                                    <div class="g-form-row" id="email_row">
+                                        <div class="g-form-row-label" style="font-family:'GE SS Two Light';text-align:right;">
+                                            <label class="g-form-row-label-h" for="Email">البريد الإلكترونى</label>
+                                        </div>
+                                        <div class="g-form-row-field">
+                                            <i class="icon-envelope"></i>
+                                            <input type="email" name="Email" id="Email">
+                                        </div>
+                                        <div class="g-form-row-state" id="email_state"></div>
+                                    </div>
+                                    <div class="g-form-row" id="Dname_row">
+                                        <div class="g-form-row-label" style="font-family:'GE SS Two Light';text-align:right;">
+                                            <label class="g-form-row-label-h" for="Fname">الإسم الأول</label>
+                                        </div>
+                                        <div class="g-form-row-field">
+                                            <i class="icon-user"></i>
+                                            <input type="text" name="Fname" id="Fname">
+                                        </div>
+                                        <div class="g-form-row-state" id="Fname_state"></div>
+                                    </div>
+                                    <div class="g-form-row" id="Lname_row">
+                                        <div class="g-form-row-label" style="font-family:'GE SS Two Light';text-align:right;">
+                                            <label class="g-form-row-label-h" for="Fname">الإسم الأخير</label>
+                                        </div>
+                                        <div class="g-form-row-field">
+                                            <i class="icon-user"></i>
+                                            <input type="text" name="Lname" id="Lname">
+                                        </div>
+                                        <div class="g-form-row-state" id="Lname_state"></div>
+                                    </div>
+                                    <div class="g-form-row" id="pass_row">
+                                        <div class="g-form-row-label" style="font-family:'GE SS Two Light';text-align:right;">
+                                            <label class="g-form-row-label-h" for="password">كلمة السر</label>
+                                        </div>
+                                        <div class="g-form-row-field">
+                                            <i class="icon-lock"></i>
+                                            <input type="password" name="password" id="password">
+                                        </div>
+                                        <div class="g-form-row-state" id="pass_state"></div>
+                                    </div>
+                                    <div class="g-form-row" id="ConPass_row">
+                                        <div class="g-form-row-label" style="font-family:'GE SS Two Light';text-align:right;">
+                                            <label class="g-form-row-label-h" for="ConPass">تأكيد كلمة السر</label>
+                                        </div>
+                                        <div class="g-form-row-field">
+                                            <i class="icon-lock"></i>
+                                            <input type="password" name="ConPass" id="ConPass" />
+                                        </div>
+                                        <div class="g-form-row-state" id="ConPass_state"></div>
+                                    </div>
+                                    <div class="g-form-row" id="phone_row">
+                                        <div class="g-form-row-label" style="font-family:'GE SS Two Light';text-align:right;">
+                                            <label class="g-form-row-label-h" for="Phone">الهاتف</label>
+                                        </div>
+                                        <div class="g-form-row-field">
+                                            <i class="icon-phone"></i>
+                                            <input type="text" name="Phone" id="Phone" />
+                                            <div class="g-form-row-state" id="Phone_state"></div>
+                                        </div>
+                                    </div>
+                                     <div class="g-form-row" id="bio_row">
+                                        <div class="g-form-row-label" style="font-family:'GE SS Two Light';text-align:right;">
+                                            <label class="g-form-row-label-h" for="Phone">نبذة عنك</label>
+                                        </div>
+                                        <div class="g-form-row-field">
+                                            <i class="icon-user"></i>
+                                            <textarea placeholder="المؤهلات و الشهادات" name="Bio" id="Bio"></textarea>
+                                        </div>
+                                        <div class="g-form-row-state" id="Bio_state"></div>
+                                    </div>
+                                    <div class="g-form-row" id="bioAr_row">
+                                        <div class="g-form-row-label" style="font-family:'GE SS Two Light';text-align:right;">
+                                            <label class="g-form-row-label-h" for="BioAr">(نبذة عنك (لغة عربية</label>
+                                        </div>
+                                        <div class="g-form-row-field">
+                                            <i class="icon-user"></i>
+                                            <textarea placeholder="المؤهلات و الشهادات" name="BioAr" id="BioAr"></textarea>
+                                        </div>
+                                        <div class="g-form-row-state" id="BioAr_state"></div>
+                                    </div>
+                                    <div class="g-form-row">
+                                        <div class="g-form-row-label"></div>
+                                        <div class="g-form-row-field">
+                                            <button class="g-btn type_primary" id="SubmitAcc"><span style="font-family:'GE SS Two Light';">تأكيــد</span></button>
+                                            <img id="DRLoader" src="~/content/img/loader.gif" style="margin-left: 100px; display: none; margin-top: -40px;">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+
+
+
+
+                    </div>
+                </section>
+
+            </div>
+        </div>
+
+    </div>
+</div>

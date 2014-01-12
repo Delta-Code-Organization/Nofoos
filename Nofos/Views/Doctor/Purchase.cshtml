@@ -1,0 +1,69 @@
+﻿@{
+    ViewBag.Title = "Purchase";
+    Layout = "~/Views/shared/MasterPage2.cshtml";
+}
+@using GDAL;
+
+<script>
+    function Purchase(ID, Counter1) {
+        window.location.href = "/Doctor/Pay/" + ID;
+    }
+</script>
+
+<div class="l-main">
+    <div class="l-main-h">
+        <div class="l-subsection">
+            <div class="l-subsection-h">
+
+                <section id="home" class="l-section">
+                    <div class="l-subsection-hh g-html i-cf">
+                        @{
+                            if (ViewBag.MSG != null)
+                            {
+                            <div class="g-alert type_success with_close">
+
+                                <div class="g-alert-close">
+                                    ✕ 
+
+                                </div>
+                                <div class="g-alert-body">
+                                    <p>
+                                        <strong>
+                                            @ViewBag.MSG
+                                        </strong>
+
+                                    </p>
+                                </div>
+
+                            </div>
+                            }
+                        }
+                        <p class="subtitle">
+                            <span class="highlight">Session With Dr.<strong>@ViewBag.Session.Therapist.FirstName @ViewBag.Session.Therapist.LastName</strong></span><br />
+                            <strong>@ViewBag.Session.Date.AddMinutes(-int.Parse(Session["TO"].ToString())).ToString("dd-MM-yyyy") at @ViewBag.Session.Date.AddMinutes(-int.Parse(Session["TO"].ToString())).TimeOfDay</strong><br />
+                            <strong>Price : @ViewBag.Session.Price EGP</strong>
+                        </p>
+                        <div class="g-hr">
+
+                            <span class="g-hr-h">
+                                <i class="icon-star"></i>
+                            </span>
+
+                        </div>
+                        <p class="size_big">
+                            We are offering this session for free for the first two weeks
+                        </p>
+
+                        <button class="g-btn type_primary size_big" onclick="Purchase(@ViewBag.Session.ID,0)">
+
+                            <span>Book Now</span>
+
+                        </button>
+                        <div style="width: 100%; height: 100px;"></div>
+
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
